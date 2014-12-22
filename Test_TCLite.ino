@@ -1,5 +1,5 @@
 /*
-  Test_TCLite
+  Test TCLite on Arduino Due
   
   Mario Ban, 12.2014
   
