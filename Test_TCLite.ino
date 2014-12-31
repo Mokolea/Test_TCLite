@@ -10,6 +10,11 @@
 #define APPLICATION_ID         100
 #define LOG_HEX_DUMP_COLUMNS   32
 
+static const int pinLED = LED_BUILTIN; // 13
+static unsigned long lastActivityLED = 0;
+static unsigned long intervalActivityLED = 500;
+static bool toggleActivityLED = false;
+
 static TCL_Error s_error;
 static TCL_UInt32 s_processingInterval; /* [ms] */
 
@@ -114,6 +119,8 @@ static void TCL_EvtRegistrationStateCallback(const TCL_EvtRegistrationState* eve
 void setup() {
   // put your setup code here, to run once:
   
+  pinMode(pinLED, OUTPUT);
+  
   Serial.begin(9600); // open the serial port at 9600 bps: port_TCL_Logger
   
   /* TCLite */
@@ -168,5 +175,19 @@ void loop() {
   }
   
   delay(s_processingInterval);
+  
+  // activity LED
+  unsigned long now = millis();
+  if(now > lastActivityLED + intervalActivityLED) {
+    lastActivityLED = now;
+    if(toggleActivityLED) {
+      digitalWrite(pinLED, HIGH);
+    }
+    else {
+      digitalWrite(pinLED, LOW);
+    }
+    toggleActivityLED = !toggleActivityLED;
+  }
 }
+
 
