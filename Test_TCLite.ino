@@ -10,16 +10,46 @@
 #define APPLICATION_ID         100
 #define LOG_HEX_DUMP_COLUMNS   32
 
-static const int pinLED = LED_BUILTIN; // 13
-static unsigned long lastActivityLED = 0;
-static unsigned long intervalActivityLED = 500;
-static bool toggleActivityLED = false;
-
 static TCL_Error s_error;
 static TCL_UInt32 s_processingInterval; /* [ms] */
 
 static TCL_Bool s_connected = TCL_FALSE;
 static TCL_TerminalRegistrationStateType s_registrationState = TCL_TERMINAL_REGISTRATION_STATE_NOT_REGISTERED;
+
+class ActivityLED
+{
+public:
+  ActivityLED()
+   : _pinLED(-1)
+   , _intervalActivityLED(1000)
+   , _lastActivityLED(0)
+   , _toggleActivityLED(false)
+  {}
+  void setup(int pinLED, unsigned long intervalActivityLED) {
+    _pinLED = pinLED;
+    _intervalActivityLED = intervalActivityLED;
+    pinMode(_pinLED, OUTPUT);
+  }
+  void process(unsigned long now) {
+    if(now > _lastActivityLED + _intervalActivityLED) {
+      _lastActivityLED = now;
+      if(_toggleActivityLED) {
+        digitalWrite(_pinLED, HIGH);
+      }
+      else {
+        digitalWrite(_pinLED, LOW);
+      }
+      _toggleActivityLED = !_toggleActivityLED;
+    }
+  }
+private:
+  int _pinLED;
+  unsigned long _intervalActivityLED;
+  unsigned long _lastActivityLED;
+  bool _toggleActivityLED;
+};
+
+static ActivityLED activityLED;
 
 static void TCL_EvtTerminalStateCallback(const TCL_EvtTerminalState* event, TCL_Error* error)
 {
@@ -119,9 +149,10 @@ static void TCL_EvtRegistrationStateCallback(const TCL_EvtRegistrationState* eve
 void setup() {
   // put your setup code here, to run once:
   
-  pinMode(pinLED, OUTPUT);
-  
   Serial.begin(9600); // open the serial port at 9600 bps: port_TCL_Logger
+  
+  // activity LED
+  activityLED.setup(LED_BUILTIN, 500); // pin out 13; 500ms on, 500ms off
   
   /* TCLite */
   
@@ -175,19 +206,11 @@ void loop() {
   }
   
   delay(s_processingInterval);
+
+  unsigned long now = millis();
   
   // activity LED
-  unsigned long now = millis();
-  if(now > lastActivityLED + intervalActivityLED) {
-    lastActivityLED = now;
-    if(toggleActivityLED) {
-      digitalWrite(pinLED, HIGH);
-    }
-    else {
-      digitalWrite(pinLED, LOW);
-    }
-    toggleActivityLED = !toggleActivityLED;
-  }
+  activityLED.process(now);
 }
 
 
