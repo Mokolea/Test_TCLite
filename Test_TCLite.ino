@@ -150,6 +150,9 @@ void setup() {
   // put your setup code here, to run once:
   
   Serial.begin(9600); // open the serial port at 9600 bps: port_TCL_Logger
+  while(!Serial) {
+    ; // wait for serial port to connect. Needed for Leonardo only
+  }
   
   // activity LED
   activityLED.setup(LED_BUILTIN, 500); // pin out 13; 500ms on, 500ms off
