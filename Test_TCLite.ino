@@ -148,7 +148,7 @@ void updateLCD_RegistrationState(TCL_TerminalRegistrationStateType registrationS
 {
   // LCD
   lcd.setCursor(REGISTRATION_STATE_COL, REGISTRATION_STATE_ROW);
-  lcd.print("                   "); /* 19 spaces */
+  lcd.print("                    "); /* 20 spaces */
   
   lcd.setCursor(REGISTRATION_STATE_COL, REGISTRATION_STATE_ROW);
   if(registrationState != TCL_TERMINAL_REGISTRATION_STATE_REGISTERED) {
@@ -284,7 +284,7 @@ void setup() {
   activityLED.setup(LED_BUILTIN, 500); // pin out 13; 500ms on, 500ms off
   
   // activity LCD
-  activityLCD.setup(&lcd, 19, 3, 1000); // col 20, row 4; 500ms interval
+  activityLCD.setup(&lcd, 19, 0, 1000); // col 20, row 1; 500ms interval
   
   // LCD
   lcd.init(); // initialize the lcd
