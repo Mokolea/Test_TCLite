@@ -15,6 +15,11 @@ static LiquidCrystal_I2C lcd(0x27, 20, 4); // set the LCD address to 0x27 for a 
 #define APPLICATION_ID         100
 #define LOG_HEX_DUMP_COLUMNS   32
 
+#define TERMINAL_STATE_COL   0
+#define TERMINAL_STATE_ROW   2
+#define REGISTRATION_STATE_COL   0
+#define REGISTRATION_STATE_ROW   3
+
 static TCL_Error s_error;
 static TCL_UInt32 s_processingInterval; /* [ms] */
 
@@ -93,13 +98,13 @@ public:
       _last = now;
       _lcd->setCursor(_col, _row);
       if((_count+3) % 4 == 0) {
-        _lcd->print("-");
+        _lcd->print(" ");
       }
       else if((_count+2) % 4 == 0) {
         _lcd->print((char)0x7e); /* right arrow */
       }
       else if((_count+1) % 4 == 0) {
-        _lcd->print("-");
+        _lcd->print(" ");
       }
       else if(_count % 4 == 0) {
         _lcd->print((char)0x7f); /* left arrow */
@@ -121,8 +126,36 @@ private:
 };
 
 static ActivityLED activityLED;
-
 static ActivityLCD activityLCD;
+
+void updateLCD_TerminalState(TCL_Bool connected, TCL_Char* RFSI)
+{
+  // LCD
+  lcd.setCursor(TERMINAL_STATE_COL, TERMINAL_STATE_ROW);
+  if(!connected) {
+    lcd.print("not connected");
+  }
+  else {
+    lcd.print(RFSI);
+  }
+}
+
+void updateLCD_RegistrationState(TCL_TerminalRegistrationStateType registrationState,
+  TCL_UInt16 rBaseNetwork, TCL_UInt8 rswIdentifier, TCL_UInt8 bsIdentifier)
+{
+  // LCD
+  lcd.setCursor(REGISTRATION_STATE_COL, REGISTRATION_STATE_ROW);
+  if(registrationState != TCL_TERMINAL_REGISTRATION_STATE_REGISTERED) {
+    lcd.print("not registered");
+  }
+  else {
+    lcd.print(rBaseNetwork);
+    lcd.print(" ");
+    lcd.print(rswIdentifier);
+    lcd.print(" ");
+    lcd.print(bsIdentifier);
+  }
+}
 
 static void TCL_EvtTerminalStateCallback(const TCL_EvtTerminalState* event, TCL_Error* error)
 {
@@ -173,6 +206,9 @@ static void TCL_EvtTerminalStateCallback(const TCL_EvtTerminalState* event, TCL_
   TCL_LogInfo("data \\ softwareVersion (hex-dump)");
   TCL_DataPrintHexDump_Info(softwareVersion, LOG_HEX_DUMP_COLUMNS);
   TCL_LogInfo("data /");
+  
+  // LCD
+  updateLCD_TerminalState(connected, TCL_StringGetString(&rfsi));
 }
 
 static void TCL_EvtRegistrationStateCallback(const TCL_EvtRegistrationState* event, TCL_Error* error)
@@ -217,6 +253,9 @@ static void TCL_EvtRegistrationStateCallback(const TCL_EvtRegistrationState* eve
   TCL_LogInfo(buffer);
   
   TCL_ErrorSetErrorCode(error, TCL_ERROR_NONE);
+  
+  // LCD
+  updateLCD_RegistrationState(registrationState, rBaseNetwork, rswIdentifier, bsIdentifier);
 }
 
 void setup() {
@@ -239,7 +278,7 @@ void setup() {
   activityLED.setup(LED_BUILTIN, 500); // pin out 13; 500ms on, 500ms off
   
   // activity LCD
-  activityLCD.setup(&lcd, 19, 3, 500); // col 20, row 4; 500ms interval
+  activityLCD.setup(&lcd, 19, 3, 1000); // col 20, row 4; 500ms interval
   
   // LCD
   lcd.init(); // initialize the lcd
@@ -247,6 +286,9 @@ void setup() {
   lcd.print("Test TCLite");
   lcd.setCursor(0, 1);
   lcd.print("v" TCL_VERSION " (" TCL_BUILD ")");
+  
+  updateLCD_TerminalState(TCL_FALSE, "");
+  updateLCD_RegistrationState(TCL_TERMINAL_REGISTRATION_STATE_NOT_REGISTERED, 0, 0, 0);
   
   /* TCLite */
   
