@@ -25,17 +25,25 @@ class ActivityLED
 {
 public:
   ActivityLED()
-   : _pin(-1)
+   : _pin(LED_BUILTIN)
    , _interval(1000)
    , _last(0)
    , _toggle(false)
+   , _enabled(false)
   {}
-  void setup(int pin, unsigned long interval) {
-    _pin = pin;
-    _interval = interval;
-    pinMode(_pin, OUTPUT);
+  void setup(unsigned char pin, unsigned long interval) {
+    if(interval >= 100) {
+      _pin = pin;
+      _interval = interval;
+      pinMode(_pin, OUTPUT);
+      _enabled = true;
+    }
+    else {
+      _enabled = false;
+    }
   }
   void process(unsigned long now) {
+    if(!_enabled) return;
     if(now > _last + _interval) {
       _last = now;
       if(_toggle) {
@@ -48,10 +56,11 @@ public:
     }
   }
 private:
-  int _pin;
+  unsigned char _pin;
   unsigned long _interval;
   unsigned long _last;
   bool _toggle;
+  bool _enabled;
 };
 
 class ActivityLCD
@@ -64,14 +73,22 @@ public:
    , _interval(1000)
    , _last(0)
    , _count(0)
+   , _enabled(false)
   {}
   void setup(LiquidCrystal_I2C *lcd, unsigned char col, unsigned char row, unsigned long interval) {
-    _lcd = lcd;
-    _col = col;
-    _row = row;
-    _interval = interval;
+    if(interval >= 100) {
+      _lcd = lcd;
+      _col = col;
+      _row = row;
+      _interval = interval;
+      _enabled = true;
+    }
+    else {
+      _enabled = false;
+    }
   }
   void process(unsigned long now) {
+    if(!_enabled) return;
     if(now > _last + _interval) {
       _last = now;
       _lcd->setCursor(_col, _row);
@@ -100,6 +117,7 @@ private:
   unsigned long _interval;
   unsigned long _last;
   unsigned char _count;
+  bool _enabled;
 };
 
 static ActivityLED activityLED;
