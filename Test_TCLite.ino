@@ -5,7 +5,12 @@
   
 */
 
+#include <Wire.h>
+#include "LiquidCrystal_I2C.h"
+
 #include "TCLite.h"
+
+static LiquidCrystal_I2C lcd(0x27, 20, 4); // set the LCD address to 0x27 for a 20 chars and 4 line display
 
 #define APPLICATION_ID         100
 #define LOG_HEX_DUMP_COLUMNS   32
@@ -149,13 +154,28 @@ static void TCL_EvtRegistrationStateCallback(const TCL_EvtRegistrationState* eve
 void setup() {
   // put your setup code here, to run once:
   
+  // Logger
   Serial.begin(9600); // open the serial port at 9600 bps: port_TCL_Logger
   while(!Serial) {
     ; // wait for serial port to connect. Needed for Leonardo only
   }
+  Serial.println("Serial: Initialized 9600");
+  
+  Serial2.begin(115200); // open the serial port at 115200 bps: port_TCL_Logger
+  while(!Serial2) {
+    ; // wait for serial port to connect. Needed for Leonardo only
+  }
+  Serial2.println("Serial2: Initialized 115200");
   
   // activity LED
   activityLED.setup(LED_BUILTIN, 500); // pin out 13; 500ms on, 500ms off
+  
+  // LCD
+  lcd.init(); // initialize the lcd
+  lcd.backlight();
+  lcd.print("Test TCLite");
+  lcd.setCursor(0, 1);
+  lcd.print("v" TCL_VERSION " (" TCL_BUILD ")");
   
   /* TCLite */
   
