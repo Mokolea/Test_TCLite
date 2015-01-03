@@ -25,36 +25,86 @@ class ActivityLED
 {
 public:
   ActivityLED()
-   : _pinLED(-1)
-   , _intervalActivityLED(1000)
-   , _lastActivityLED(0)
-   , _toggleActivityLED(false)
+   : _pin(-1)
+   , _interval(1000)
+   , _last(0)
+   , _toggle(false)
   {}
-  void setup(int pinLED, unsigned long intervalActivityLED) {
-    _pinLED = pinLED;
-    _intervalActivityLED = intervalActivityLED;
-    pinMode(_pinLED, OUTPUT);
+  void setup(int pin, unsigned long interval) {
+    _pin = pin;
+    _interval = interval;
+    pinMode(_pin, OUTPUT);
   }
   void process(unsigned long now) {
-    if(now > _lastActivityLED + _intervalActivityLED) {
-      _lastActivityLED = now;
-      if(_toggleActivityLED) {
-        digitalWrite(_pinLED, HIGH);
+    if(now > _last + _interval) {
+      _last = now;
+      if(_toggle) {
+        digitalWrite(_pin, HIGH);
       }
       else {
-        digitalWrite(_pinLED, LOW);
+        digitalWrite(_pin, LOW);
       }
-      _toggleActivityLED = !_toggleActivityLED;
+      _toggle = !_toggle;
     }
   }
 private:
-  int _pinLED;
-  unsigned long _intervalActivityLED;
-  unsigned long _lastActivityLED;
-  bool _toggleActivityLED;
+  int _pin;
+  unsigned long _interval;
+  unsigned long _last;
+  bool _toggle;
+};
+
+class ActivityLCD
+{
+public:
+  ActivityLCD()
+   : _lcd(0)
+   , _col(0)
+   , _row(0)
+   , _interval(1000)
+   , _last(0)
+   , _count(0)
+  {}
+  void setup(LiquidCrystal_I2C *lcd, unsigned char col, unsigned char row, unsigned long interval) {
+    _lcd = lcd;
+    _col = col;
+    _row = row;
+    _interval = interval;
+  }
+  void process(unsigned long now) {
+    if(now > _last + _interval) {
+      _last = now;
+      _lcd->setCursor(_col, _row);
+      if((_count+3) % 4 == 0) {
+        _lcd->print("-");
+      }
+      else if((_count+2) % 4 == 0) {
+        _lcd->print("\\");
+      }
+      else if((_count+1) % 4 == 0) {
+        _lcd->print("|");
+      }
+      else if(_count % 4 == 0) {
+        _lcd->print("/");
+      }
+      else {
+        _lcd->print("?"); /* never */
+      }
+      _count++;
+    }
+  }
+private:
+  LiquidCrystal_I2C *_lcd;
+  unsigned char _col;
+  unsigned char _row;
+  unsigned long _interval;
+  unsigned long _last;
+  unsigned char _count;
 };
 
 static ActivityLED activityLED;
+
+static ActivityLCD activityLCD;
 
 static void TCL_EvtTerminalStateCallback(const TCL_EvtTerminalState* event, TCL_Error* error)
 {
@@ -170,6 +220,9 @@ void setup() {
   // activity LED
   activityLED.setup(LED_BUILTIN, 500); // pin out 13; 500ms on, 500ms off
   
+  // activity LCD
+  activityLCD.setup(&lcd, 19, 3, 500); // col 20, row 4; 500ms interval
+  
   // LCD
   lcd.init(); // initialize the lcd
   lcd.backlight();
@@ -234,6 +287,8 @@ void loop() {
   
   // activity LED
   activityLED.process(now);
+  
+  // activity LCD
+  activityLCD.process(now);
 }
-
 
