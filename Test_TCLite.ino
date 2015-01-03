@@ -296,8 +296,8 @@ void setup() {
   updateLCD_TerminalState(TCL_FALSE, "");
   updateLCD_RegistrationState(TCL_TERMINAL_REGISTRATION_STATE_NOT_REGISTERED, 0, 0, 0);
   
-  updateLCD_TerminalState(TCL_TRUE, "994110901");
-  updateLCD_RegistrationState(TCL_TERMINAL_REGISTRATION_STATE_REGISTERED, 994, 1, 2);
+  /*updateLCD_TerminalState(TCL_TRUE, "994110901");
+  updateLCD_RegistrationState(TCL_TERMINAL_REGISTRATION_STATE_REGISTERED, 994, 1, 2);*/
   
   /* TCLite */
   
