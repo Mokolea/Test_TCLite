@@ -96,13 +96,13 @@ public:
         _lcd->print("-");
       }
       else if((_count+2) % 4 == 0) {
-        _lcd->print("\\");
+        _lcd->print((char)0x7e); /* right arrow */
       }
       else if((_count+1) % 4 == 0) {
-        _lcd->print("|");
+        _lcd->print("-");
       }
       else if(_count % 4 == 0) {
-        _lcd->print("/");
+        _lcd->print((char)0x7f); /* left arrow */
       }
       else {
         _lcd->print("?"); /* never */
