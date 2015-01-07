@@ -3,6 +3,10 @@
   
   Mario Ban, 12.2014
   
+  todo:
+  count and display at fix column the # of terminal-state events, registration-state events
+  use tft diaplay for log (with colors)
+  
 */
 
 #include <Wire.h>
