@@ -4,17 +4,34 @@
   Mario Ban, 12.2014
   
   todo:
-  count and display at fix column the # of terminal-state events, registration-state events
-  use tft diaplay for log (with colors)
+    - count and display at fix column the # of terminal-state events, registration-state events
+    - use tft diaplay for log (with colors)
   
 */
 
 #include <Wire.h>
 #include "LiquidCrystal_I2C.h"
 
+#define TCL_LOG_TFT   0   /* 1: enable, 0: disable */
+
+#if TCL_LOG_TFT > 0
+#include "SPI.h"
+#include "Adafruit_GFX.h"
+#include "Adafruit_ILI9340.h"
+// Arduino Due hardware SPI pins
+#define _cs 10
+#define _dc 9
+#define _rst 8
+#endif
+
 #include "TCLite.h"
 
 static LiquidCrystal_I2C lcd(0x27, 20, 4); // set the LCD address to 0x27 for a 20 chars and 4 line display
+
+#if TCL_LOG_TFT > 0
+// Use hardware SPI
+Adafruit_ILI9340 tft = Adafruit_ILI9340(_cs, _dc, _rst); // Arduino Uno: MOSI 11, SCLK 13
+#endif
 
 #define APPLICATION_ID         100
 #define LOG_HEX_DUMP_COLUMNS   32
@@ -302,6 +319,18 @@ void setup() {
   
   /*updateLCD_TerminalState(TCL_TRUE, "994110901");
   updateLCD_RegistrationState(TCL_TERMINAL_REGISTRATION_STATE_REGISTERED, 994, 1, 2);*/
+  
+  // TFT
+#if TCL_LOG_TFT > 0
+  tft.begin();
+  tft.fillScreen(ILI9340_BLACK);
+  tft.setCursor(0, 0);
+  tft.setTextColor(ILI9340_GREEN);
+  tft.setTextSize(3);
+  tft.println("Test TCLite");
+  tft.setTextColor(ILI9340_WHITE);
+  tft.setTextSize(1);
+#endif
   
   /* TCLite */
   
