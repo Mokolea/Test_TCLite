@@ -12,12 +12,16 @@
 #include <Wire.h>
 #include "LiquidCrystal_I2C.h"
 
-#define TCL_LOG_TFT   0   /* 1: enable, 0: disable */
+#define TCL_LOG_TFT   1   /* 1: enable, 0: disable */
 
 #if TCL_LOG_TFT > 0
 #include "SPI.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9340.h"
+// SPI
+//#define _sclk 13
+//#define _miso 12
+//#define _mosi 11
 // Arduino Due hardware SPI pins
 #define _cs 10
 #define _dc 9
@@ -29,6 +33,8 @@
 static LiquidCrystal_I2C lcd(0x27, 20, 4); // set the LCD address to 0x27 for a 20 chars and 4 line display
 
 #if TCL_LOG_TFT > 0
+// Using software SPI is really not suggested, its incredibly slow
+//Adafruit_ILI9340 tft = Adafruit_ILI9340(_cs, _dc, _mosi, _sclk, _rst, _miso);
 // Use hardware SPI
 Adafruit_ILI9340 tft = Adafruit_ILI9340(_cs, _dc, _rst); // Arduino Uno: MOSI 11, SCLK 13
 #endif
@@ -74,9 +80,11 @@ public:
       _last = now;
       if(_toggle) {
         digitalWrite(_pin, HIGH);
+        //TCL_LogInfo("ActivityLED HIGH");
       }
       else {
         digitalWrite(_pin, LOW);
+        //TCL_LogInfo("ActivityLED LOW");
       }
       _toggle = !_toggle;
     }
@@ -323,14 +331,26 @@ void setup() {
   // TFT
 #if TCL_LOG_TFT > 0
   tft.begin();
+  tft.setRotation(1);
   tft.fillScreen(ILI9340_BLACK);
   tft.setCursor(0, 0);
   tft.setTextColor(ILI9340_GREEN);
-  tft.setTextSize(3);
+  tft.setTextSize(2);
   tft.println("Test TCLite");
+  tft.println("v" TCL_VERSION " (" TCL_BUILD ")");
+  tft.println("-------------------------");
   tft.setTextColor(ILI9340_WHITE);
   tft.setTextSize(1);
 #endif
+  
+  TCL_LogInfo("+++ test TCL_Logger");
+  TCL_LogInfo("TCL_LOG_INFO");
+  TCL_LogFatal("TCL_LOG_FATSL");
+  TCL_LogError("TCL_LOG_ERROR");
+  TCL_LogWarning("TCL_LOG_WARNING");
+  TCL_LogDebug("TCL_LOG_DEBUG");
+  TCL_LogFunction("TCL_LOG_FUNCTION");
+  TCL_LogInfo("--- test TCL_Logger");
   
   /* TCLite */
   
