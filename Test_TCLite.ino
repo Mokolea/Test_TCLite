@@ -345,7 +345,7 @@ void setup() {
   
   TCL_LogInfo("+++ test TCL_Logger");
   TCL_LogInfo("TCL_LOG_INFO");
-  TCL_LogFatal("TCL_LOG_FATSL");
+  TCL_LogFatal("TCL_LOG_FATAL");
   TCL_LogError("TCL_LOG_ERROR");
   TCL_LogWarning("TCL_LOG_WARNING");
   TCL_LogDebug("TCL_LOG_DEBUG");
