@@ -1,11 +1,12 @@
 /*
   Test TCLite on Arduino Due
   
-  Mario Ban, 12.2014
+  Mario Ban, 12.2014, 01.2015
   
   todo:
-    - count and display at fix column the # of terminal-state events, registration-state events
-    - use tft diaplay for log (with colors)
+    - count and display at fix column the # of terminal-state events, registration-state events, ...
+    - use tft diaplay for log (with colors) ok
+    - register for all data callbacks, display data (hex/text: first 20 chars)
   
 */
 
