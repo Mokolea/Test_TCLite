@@ -50,7 +50,7 @@ Adafruit_ILI9340 tft = Adafruit_ILI9340(_cs, _dc, _rst); // Arduino Uno: MOSI 11
 #define LCD_TCLITE_BUSY_COL          18   /* 1 char */
 #define LCD_TCLITE_BUSY_ROW           0
 #define LCD_TCLITE_DATA_RECV_COL      0   /* 20 chars */
-#define LCD_TCLITE_DATA_RECV_ROW      0
+#define LCD_TCLITE_DATA_RECV_ROW      1
 #define LCD_ACTIVITY_COL             19   /* 1 char */
 #define LCD_ACTIVITY_ROW              0
 
