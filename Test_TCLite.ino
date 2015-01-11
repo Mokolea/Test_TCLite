@@ -55,6 +55,9 @@ Adafruit_ILI9340 tft = Adafruit_ILI9340(_cs, _dc, _rst); // Arduino Uno: MOSI 11
 #define TCL_DATA_ACK_SEND_BACK   1   /* 1: enable, 0: disable */
 #define TCL_DATA_ACK_SEND_CASE   2   /* send-data-ack test-case: 1..5 */
 
+#define TCL_DATA_NOT_ACK_SEND_BACK   1   /* 1: enable, 0: disable */
+#define TCL_DATA_NOT_ACK_SEND_CASE   2   /* send-data-not-ack test-case: 1..5 */
+
 static TCL_Error s_error;
 static TCL_UInt32 s_processingInterval; /* [ms] */
 
@@ -65,13 +68,18 @@ static TCL_UInt8 s_busyCount = 0;
 static TCL_Bool s_busy = TCL_FALSE;
 
 static TCL_ReqSendDataAck s_reqSendDataAck;
+static TCL_ReqSendDataNotAck s_reqSendDataNotAck;
 
 static TCL_RequestId s_requestId = 1000;
 
 static TCL_Bool s_send_1 = TCL_FALSE;   /* data-ack */
 static TCL_SourceAddress s_sourceAddress_1;
-static TCL_String s_rfsi_1; /* test: self RFSI */
-static TCL_Char s_rfsiBuffer_1[TCL_ADDRESS_RFSI_STRING_BUFFER_SIZE];
+
+static TCL_Bool s_send_2 = TCL_FALSE;   /* data-not-ack */
+static TCL_SourceAddress s_sourceAddress_2;
+
+static TCL_String s_rfsi; /* test: self RFSI */
+static TCL_Char s_rfsiBuffer[TCL_ADDRESS_RFSI_STRING_BUFFER_SIZE];
 
 class ActivityLED
 {
@@ -257,14 +265,24 @@ void setup() {
     TCL_LogError("TCL_ReqSendDataAckConstruct failed");
     exit(EXIT_FAILURE);
   }
+  TCL_ReqSendDataNotAckConstruct(&s_reqSendDataNotAck, &s_error);
+  if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
+    TCL_LogError("TCL_ReqSendDataNotAckConstruct failed");
+    exit(EXIT_FAILURE);
+  }
   
   TCL_SourceAddressConstruct(&s_sourceAddress_1, &s_error);
   if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
     TCL_LogError("TCL_SourceAddressConstruct failed");
     exit(EXIT_FAILURE);
   }
+  TCL_SourceAddressConstruct(&s_sourceAddress_2, &s_error);
+  if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
+    TCL_LogError("TCL_SourceAddressConstruct failed");
+    exit(EXIT_FAILURE);
+  }
   
-  TCL_StringConstruct(&s_rfsi_1, s_rfsiBuffer_1, sizeof(s_rfsiBuffer_1), &s_error);
+  TCL_StringConstruct(&s_rfsi, s_rfsiBuffer, sizeof(s_rfsiBuffer), &s_error);
   if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
     TCL_LogError("TCL_StringConstruct failed");
     exit(EXIT_FAILURE);
@@ -289,16 +307,31 @@ void setup() {
     TCL_LogError("TCL_ReqSendDataAckBusyRegisterCallback failed");
     exit(EXIT_FAILURE);
   }
+  TCL_ReqSendDataNotAckBusyRegisterCallback(TCL_ReqSendDataNotAckBusyCallback, &s_error);
+  if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
+    TCL_LogError("TCL_ReqSendDataNotAckBusyRegisterCallback failed");
+    exit(EXIT_FAILURE);
+  }
   
   TCL_RspDataAckSentRegisterCallback(TCL_RspDataAckSentCallback, &s_error);
   if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
     TCL_LogError("TCL_RspDataAckSentRegisterCallback failed");
     exit(EXIT_FAILURE);
   }
+  TCL_RspDataNotAckSentRegisterCallback(TCL_RspDataNotAckSentCallback, &s_error);
+  if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
+    TCL_LogError("TCL_RspDataNotAckSentRegisterCallback failed");
+    exit(EXIT_FAILURE);
+  }
   
   TCL_EvtDataAckReceivedRegisterCallback(TCL_EvtDataAckReceivedCallback, &s_error);
   if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
     TCL_LogError("TCL_EvtDataAckReceivedRegisterCallback failed");
+    exit(EXIT_FAILURE);
+  }
+  TCL_EvtDataNotAckReceivedRegisterCallback(TCL_EvtDataNotAckReceivedCallback, &s_error);
+  if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
+    TCL_LogError("TCL_EvtDataNotAckReceivedRegisterCallback failed");
     exit(EXIT_FAILURE);
   }
   
@@ -328,6 +361,15 @@ void loop() {
     s_send_1 = TCL_FALSE;
     /* TCL_ReqSendDataAck */
     Send_ReqSendDataAck(&s_error);
+    if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
+      exit(EXIT_FAILURE);
+    }
+  }
+  
+  if(s_send_2 && s_connected && s_registrationState == TCL_TERMINAL_REGISTRATION_STATE_REGISTERED && !s_busy) {
+    s_send_2 = TCL_FALSE;
+    /* TCL_ReqSendDataNotAck */
+    Send_ReqSendDataNotAck(&s_error);
     if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
       exit(EXIT_FAILURE);
     }
