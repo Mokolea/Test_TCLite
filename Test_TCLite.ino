@@ -52,11 +52,26 @@ Adafruit_ILI9340 tft = Adafruit_ILI9340(_cs, _dc, _rst); // Arduino Uno: MOSI 11
 #define LCD_ACTIVITY_COL             19   /* 1 char */
 #define LCD_ACTIVITY_ROW              0
 
+#define TCL_DATA_ACK_SEND_BACK   1   /* 1: enable, 0: disable */
+#define TCL_DATA_ACK_SEND_CASE   2   /* send-data-ack test-case: 1..5 */
+
 static TCL_Error s_error;
 static TCL_UInt32 s_processingInterval; /* [ms] */
 
 static TCL_Bool s_connected = TCL_FALSE;
 static TCL_TerminalRegistrationStateType s_registrationState = TCL_TERMINAL_REGISTRATION_STATE_NOT_REGISTERED;
+
+static TCL_UInt8 s_busyCount = 0;
+static TCL_Bool s_busy = TCL_FALSE;
+
+static TCL_ReqSendDataAck s_reqSendDataAck;
+
+static TCL_RequestId s_requestId = 1000;
+
+static TCL_Bool s_send_1 = TCL_FALSE;   /* data-ack */
+static TCL_SourceAddress s_sourceAddress_1;
+static TCL_String s_rfsi_1; /* test: self RFSI */
+static TCL_Char s_rfsiBuffer_1[TCL_ADDRESS_RFSI_STRING_BUFFER_SIZE];
 
 class ActivityLED
 {
@@ -187,9 +202,10 @@ void setup() {
   
   updateLCD_TerminalState(TCL_FALSE, "");
   updateLCD_RegistrationState(TCL_TERMINAL_REGISTRATION_STATE_NOT_REGISTERED, 0, 0, 0);
+  updateLCD_Busy();
   
-  /*updateLCD_TerminalState(TCL_TRUE, "994110901");
-  updateLCD_RegistrationState(TCL_TERMINAL_REGISTRATION_STATE_REGISTERED, 994, 1, 2);*/
+  //updateLCD_TerminalState(TCL_TRUE, "994110901");
+  //updateLCD_RegistrationState(TCL_TERMINAL_REGISTRATION_STATE_REGISTERED, 994, 1, 2);
   
   // TFT
 #if TCL_LOG_TFT > 0
@@ -236,6 +252,24 @@ void setup() {
     exit(EXIT_FAILURE);
   }
   
+  TCL_ReqSendDataAckConstruct(&s_reqSendDataAck, &s_error);
+  if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
+    TCL_LogError("TCL_ReqSendDataAckConstruct failed");
+    exit(EXIT_FAILURE);
+  }
+  
+  TCL_SourceAddressConstruct(&s_sourceAddress_1, &s_error);
+  if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
+    TCL_LogError("TCL_SourceAddressConstruct failed");
+    exit(EXIT_FAILURE);
+  }
+  
+  TCL_StringConstruct(&s_rfsi_1, s_rfsiBuffer_1, sizeof(s_rfsiBuffer_1), &s_error);
+  if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
+    TCL_LogError("TCL_StringConstruct failed");
+    exit(EXIT_FAILURE);
+  }
+  
   /* register callbacks */
   
   TCL_EvtTerminalStateRegisterCallback(TCL_EvtTerminalStateCallback, &s_error);
@@ -247,6 +281,24 @@ void setup() {
   TCL_EvtRegistrationStateRegisterCallback(TCL_EvtRegistrationStateCallback, &s_error);
   if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
     TCL_LogError("TCL_EvtRegistrationStateRegisterCallback failed");
+    exit(EXIT_FAILURE);
+  }
+  
+  TCL_ReqSendDataAckBusyRegisterCallback(TCL_ReqSendDataAckBusyCallback, &s_error);
+  if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
+    TCL_LogError("TCL_ReqSendDataAckBusyRegisterCallback failed");
+    exit(EXIT_FAILURE);
+  }
+  
+  TCL_RspDataAckSentRegisterCallback(TCL_RspDataAckSentCallback, &s_error);
+  if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
+    TCL_LogError("TCL_RspDataAckSentRegisterCallback failed");
+    exit(EXIT_FAILURE);
+  }
+  
+  TCL_EvtDataAckReceivedRegisterCallback(TCL_EvtDataAckReceivedCallback, &s_error);
+  if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
+    TCL_LogError("TCL_EvtDataAckReceivedRegisterCallback failed");
     exit(EXIT_FAILURE);
   }
   
