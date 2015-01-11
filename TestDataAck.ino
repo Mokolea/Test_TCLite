@@ -129,6 +129,9 @@ static void TCL_EvtDataAckReceivedCallback(const TCL_EvtDataAckReceived* event, 
   TCL_LogInfo("data \\ (hex-dump)");
   TCL_DataPrintHexDump_Info(data, LOG_HEX_DUMP_COLUMNS);
   TCL_LogInfo("data /");
+  
+  // LCD
+  updateLCD_Data(data);
 }
 
 static void Send_ReqSendDataAck(TCL_Error* error)
