@@ -135,9 +135,9 @@ static void TCL_EvtRegistrationStateCallback(const TCL_EvtRegistrationState* eve
               );
   TCL_LogInfo(buffer);
   
-  TCL_ErrorSetErrorCode(error, TCL_ERROR_NONE);
-  
   // LCD
   updateLCD_RegistrationState(registrationState, rBaseNetwork, rswIdentifier, bsIdentifier);
+  
+  TCL_ErrorSetErrorCode(error, TCL_ERROR_NONE);
 }
 
