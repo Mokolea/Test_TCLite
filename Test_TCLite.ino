@@ -324,6 +324,15 @@ void loop() {
     exit(EXIT_FAILURE);
   }
   
+  if(s_send_1 && s_connected && s_registrationState == TCL_TERMINAL_REGISTRATION_STATE_REGISTERED && !s_busy) {
+    s_send_1 = TCL_FALSE;
+    /* TCL_ReqSendDataAck */
+    Send_ReqSendDataAck(&s_error);
+    if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
+      exit(EXIT_FAILURE);
+    }
+  }
+  
   delay(s_processingInterval);
 
   unsigned long now = millis();
