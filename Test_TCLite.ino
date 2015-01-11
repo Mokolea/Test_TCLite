@@ -43,10 +43,14 @@ Adafruit_ILI9340 tft = Adafruit_ILI9340(_cs, _dc, _rst); // Arduino Uno: MOSI 11
 #define APPLICATION_ID         100
 #define LOG_HEX_DUMP_COLUMNS   32
 
-#define TERMINAL_STATE_COL   0
-#define TERMINAL_STATE_ROW   2
-#define REGISTRATION_STATE_COL   0
-#define REGISTRATION_STATE_ROW   3
+#define LCD_TERMINAL_STATE_COL        0   /* 20 chars */
+#define LCD_TERMINAL_STATE_ROW        2
+#define LCD_REGISTRATION_STATE_COL    0   /* 20 chars */
+#define LCD_REGISTRATION_STATE_ROW    3
+#define LCD_TCLITE_BUSY_COL          18   /* 1 char */
+#define LCD_TCLITE_BUSY_ROW           0
+#define LCD_ACTIVITY_COL             19   /* 1 char */
+#define LCD_ACTIVITY_ROW              0
 
 static TCL_Error s_error;
 static TCL_UInt32 s_processingInterval; /* [ms] */
@@ -174,12 +178,6 @@ void setup() {
   }
   Serial2.println("Serial2: Initialized 115200");
   
-  // activity LED
-  activityLED.setup(LED_BUILTIN, 500); // pin out 13; 500ms on, 500ms off
-  
-  // activity LCD
-  activityLCD.setup(&lcd, 19, 0, 1000); // col 20, row 1; 500ms interval
-  
   // LCD
   lcd.init(); // initialize the lcd
   lcd.backlight();
@@ -216,6 +214,12 @@ void setup() {
   TCL_LogDebug("TCL_LOG_DEBUG");
   TCL_LogFunction("TCL_LOG_FUNCTION");
   TCL_LogInfo("--- test TCL_Logger");
+  
+  // activity LED
+  activityLED.setup(LED_BUILTIN, 500); // pin out 13; 500ms on, 500ms off
+  
+  // activity LCD
+  activityLCD.setup(&lcd, LCD_ACTIVITY_COL, LCD_ACTIVITY_ROW, 1000); // col 20, row 1; 500ms interval
   
   /* TCLite */
   
