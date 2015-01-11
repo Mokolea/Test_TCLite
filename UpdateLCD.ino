@@ -65,10 +65,21 @@ void updateLCD_Data(const TCL_Data* data)
   
   TCL_UInt8* dataPointer = TCL_DataGetDataPointer(data);
   
+#if 0
   for(TCL_UInt32 i=0; i<TCL_DataGetSize(data) && i<4; i++) {
     char hex[6];
     sprintf(hex, "0x%02x ", dataPointer[i]);
     lcd.print(hex);
+  }
+#endif
+  
+  for(TCL_UInt32 i=0; i<TCL_DataGetSize(data) && i<20; i++) {
+    if(dataPointer[i] >= 0x20 && dataPointer[i] <= 0x7e) {
+      lcd.print((TCL_Char)dataPointer[i]); /* printable */
+    }
+    else {
+      lcd.print("."); /* substitute non-printable */
+    }
   }
 }
 
