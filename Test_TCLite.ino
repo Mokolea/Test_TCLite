@@ -348,7 +348,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-
+  
   /* TCLite */
   
   /* processing */
@@ -378,7 +378,7 @@ void loop() {
   }
   
   delay(s_processingInterval);
-
+  
   unsigned long now = millis();
   
   // activity LED
