@@ -58,5 +58,17 @@ void updateLCD_Busy()
 
 void updateLCD_Data(const TCL_Data* data)
 {
+  // LCD
+  lcd.setCursor(LCD_TCLITE_DATA_RECV_COL, LCD_TCLITE_DATA_RECV_ROW);
+  lcd.print("                    "); /* 20 spaces */
+  lcd.setCursor(LCD_TCLITE_DATA_RECV_COL, LCD_TCLITE_DATA_RECV_ROW);
+  
+  TCL_UInt8* dataPointer = TCL_DataGetDataPointer(data);
+  
+  for(TCL_UInt32 i=0; i<TCL_DataGetSize(data) && i<4; i++) {
+    char hex[6];
+    sprintf(hex, "0x%02x ", dataPointer[i]);
+    lcd.print(hex);
+  }
 }
 
