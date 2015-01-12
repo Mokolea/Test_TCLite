@@ -15,12 +15,7 @@ static void TCL_ReqSendDataAckBusyCallback(TCL_Bool busy, TCL_Error* error)
               );
   TCL_LogInfo(buffer);
   
-  if(busy) {
-    s_busyCount++;
-  }
-  else {
-    s_busyCount--;
-  }
+  s_busy_1 = busy;
   
   // LCD
   updateLCD_Busy();
@@ -38,12 +33,7 @@ static void TCL_ReqSendDataNotAckBusyCallback(TCL_Bool busy, TCL_Error* error)
               );
   TCL_LogInfo(buffer);
   
-  if(busy) {
-    s_busyCount++;
-  }
-  else {
-    s_busyCount--;
-  }
+  s_busy_2 = busy;
   
   // LCD
   updateLCD_Busy();

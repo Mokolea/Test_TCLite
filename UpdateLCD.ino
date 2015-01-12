@@ -42,7 +42,7 @@ void updateLCD_RegistrationState(TCL_TerminalRegistrationStateType registrationS
 
 void updateLCD_Busy()
 {
-  TCL_Bool busy = (s_busyCount != 0);
+  TCL_Bool busy = s_busy_1 || s_busy_2;
   
   // LCD
   lcd.setCursor(LCD_TCLITE_BUSY_COL, LCD_TCLITE_BUSY_ROW);

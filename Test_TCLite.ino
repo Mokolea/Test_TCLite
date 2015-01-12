@@ -66,7 +66,8 @@ static TCL_UInt32 s_processingInterval; /* [ms] */
 static TCL_Bool s_connected = TCL_FALSE;
 static TCL_TerminalRegistrationStateType s_registrationState = TCL_TERMINAL_REGISTRATION_STATE_NOT_REGISTERED;
 
-static TCL_UInt8 s_busyCount = 0;
+static TCL_Bool s_busy_1 = TCL_FALSE;   /* data-ack */
+static TCL_Bool s_busy_2 = TCL_FALSE;   /* data-not-ack */
 static TCL_Bool s_busy = TCL_FALSE;
 
 static TCL_ReqSendDataAck s_reqSendDataAck;
