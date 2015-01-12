@@ -246,7 +246,7 @@ void setup() {
   activityLED.setup(LED_BUILTIN, 500); // pin out 13; 500ms on, 500ms off
   
   // activity LCD
-  activityLCD.setup(&lcd, LCD_ACTIVITY_COL, LCD_ACTIVITY_ROW, 1000); // col 20, row 1; 500ms interval
+  activityLCD.setup(&lcd, LCD_ACTIVITY_COL, LCD_ACTIVITY_ROW, 1000); // col 20, row 1; 1s interval
   
   /* TCLite */
   
