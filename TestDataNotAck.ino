@@ -50,7 +50,7 @@ static void TCL_EvtDataNotAckReceivedCallback(const TCL_EvtDataNotAckReceived* e
   
   TCL_Data  dataCompression;
   //TCL_UInt8 dataCompressionBuffer[800 * 1000];
-  TCL_UInt8 dataCompressionBuffer[8 * 100];
+  TCL_UInt8 dataCompressionBuffer[8 * 10];
   
   TCL_DataConstruct(&dataCompression, dataCompressionBuffer, sizeof(dataCompressionBuffer), error);
   if(TCL_TRUE == TCL_ErrorIsError(error)) {
@@ -153,7 +153,7 @@ static void Send_ReqSendDataNotAck(TCL_Error* error)
   
   TCL_Data  dataCompression;
   //TCL_UInt8 dataCompressionBuffer[800 * 1000];
-  TCL_UInt8 dataCompressionBuffer[8 * 100];
+  TCL_UInt8 dataCompressionBuffer[8 * 10];
   
   compression = TCL_COMPRESSION_OFF;
   
