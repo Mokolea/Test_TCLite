@@ -49,6 +49,10 @@ Adafruit_ILI9340 tft = Adafruit_ILI9340(_cs, _dc, _rst); // Arduino Uno: MOSI 11
 #define LCD_REGISTRATION_STATE_ROW    3
 #define LCD_TCLITE_BUSY_COL          18   /* 1 char */
 #define LCD_TCLITE_BUSY_ROW           0
+#define LCD_TCLITE_SEND_COL          17   /* 1 char */
+#define LCD_TCLITE_SEND_ROW           0
+#define LCD_TCLITE_RECV_COL          16   /* 1 char */
+#define LCD_TCLITE_RECV_ROW           0
 #define LCD_TCLITE_DATA_RECV_COL      0   /* 20 chars */
 #define LCD_TCLITE_DATA_RECV_ROW      1
 #define LCD_ACTIVITY_COL             19   /* 1 char */
@@ -161,13 +165,13 @@ public:
         _lcd->print(" ");
       }
       else if((_count+2) % 4 == 0) {
-        _lcd->print((char)0x7e); /* right arrow */
+        _lcd->print("x");
       }
       else if((_count+1) % 4 == 0) {
         _lcd->print(" ");
       }
       else if(_count % 4 == 0) {
-        _lcd->print((char)0x7f); /* left arrow */
+        _lcd->print("o");
       }
       else {
         _lcd->print("?"); /* never */

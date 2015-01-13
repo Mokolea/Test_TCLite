@@ -29,6 +29,9 @@ static void TCL_RspDataNotAckSentCallback(const TCL_RspDataNotAckSent* response,
               );
   TCL_LogInfo(buffer);
   
+  // LCD
+  updateLCD_DataIndication(TCL_FALSE, TCL_TRUE);
+  
   TCL_ErrorSetErrorCode(error, TCL_ERROR_NONE);
 }
 
@@ -51,6 +54,9 @@ static void TCL_EvtDataNotAckReceivedCallback(const TCL_EvtDataNotAckReceived* e
   TCL_Data  dataCompression;
   //TCL_UInt8 dataCompressionBuffer[800 * 1000];
   TCL_UInt8 dataCompressionBuffer[8 * 10];
+  
+  // LCD
+  updateLCD_DataIndication(TCL_TRUE, TCL_FALSE);
   
   TCL_DataConstruct(&dataCompression, dataCompressionBuffer, sizeof(dataCompressionBuffer), error);
   if(TCL_TRUE == TCL_ErrorIsError(error)) {
@@ -132,12 +138,14 @@ static void TCL_EvtDataNotAckReceivedCallback(const TCL_EvtDataNotAckReceived* e
   
   // LCD
   updateLCD_Data(data);
+  updateLCD_DataIndication(TCL_FALSE, TCL_FALSE);
 }
 
 static void Send_ReqSendDataNotAck(TCL_Error* error)
 {
   TCL_Data  data;
-  TCL_UInt8 dataBuffer[1500]; /* TCL_REQ_SEND_DATA_NOT_ACK_DATA_SIZE_MAX */
+  //TCL_UInt8 dataBuffer[1500]; /* TCL_REQ_SEND_DATA_NOT_ACK_DATA_SIZE_MAX */
+  TCL_UInt8 dataBuffer[150];
   TCL_UInt8 data_test1[] = {'H', 'e', 'l', 'l', 'o'};
   TCL_UInt32 i;
   TCL_UInt8 fill = 'o'; /* test DLEs (these will be doubled): 0x10 */
@@ -154,6 +162,9 @@ static void Send_ReqSendDataNotAck(TCL_Error* error)
   TCL_Data  dataCompression;
   //TCL_UInt8 dataCompressionBuffer[800 * 1000];
   TCL_UInt8 dataCompressionBuffer[8 * 10];
+  
+  // LCD
+  updateLCD_DataIndication(TCL_TRUE, TCL_TRUE);
   
   compression = TCL_COMPRESSION_OFF;
   

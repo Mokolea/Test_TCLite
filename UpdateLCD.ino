@@ -56,6 +56,26 @@ void updateLCD_Busy()
   s_busy = busy;
 }
 
+void updateLCD_DataIndication(TCL_Bool indStart, TCL_Bool dirSend)
+{
+  char c = ' ';
+  
+  // LCD
+  if(dirSend) {
+    lcd.setCursor(LCD_TCLITE_SEND_COL, LCD_TCLITE_SEND_ROW);
+    if(indStart) {
+      c = (char)0x7e; /* right arrow */
+    }
+  }
+  else {
+    lcd.setCursor(LCD_TCLITE_RECV_COL, LCD_TCLITE_RECV_ROW);
+    if(indStart) {
+      c = (char)0x7f; /* left arrow */
+    }
+  }
+  lcd.print(c);
+}
+
 void updateLCD_Data(const TCL_Data* data)
 {
   // LCD
@@ -73,6 +93,7 @@ void updateLCD_Data(const TCL_Data* data)
   }
 #endif
   
+  // print first 20 data bytes
   for(TCL_UInt32 i=0; i<TCL_DataGetSize(data) && i<20; i++) {
     if(dataPointer[i] >= 0x20 && dataPointer[i] <= 0x7e) {
       lcd.print((TCL_Char)dataPointer[i]); /* printable */
