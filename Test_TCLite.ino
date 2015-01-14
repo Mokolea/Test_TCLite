@@ -59,10 +59,10 @@ Adafruit_ILI9340 tft = Adafruit_ILI9340(_cs, _dc, _rst); // Arduino Uno: MOSI 11
 #define LCD_ACTIVITY_ROW              0
 
 #define TCL_DATA_ACK_SEND_BACK   1   /* 1: enable, 0: disable */
-#define TCL_DATA_ACK_SEND_CASE   2   /* send-data-ack test-case: 1..5 */
+#define TCL_DATA_ACK_SEND_CASE   4   /* send-data-ack test-case: 1..5 */
 
 #define TCL_DATA_NOT_ACK_SEND_BACK   1   /* 1: enable, 0: disable */
-#define TCL_DATA_NOT_ACK_SEND_CASE   2   /* send-data-not-ack test-case: 1..5 */
+#define TCL_DATA_NOT_ACK_SEND_CASE   4   /* send-data-not-ack test-case: 1..5 */
 
 static TCL_Error s_error;
 static TCL_UInt32 s_processingInterval; /* [ms] */
@@ -94,7 +94,7 @@ public:
   ActivityLED()
    : _pin(LED_BUILTIN)
    , _interval(1000)
-   , _last(0)
+   , _timeStamp(0)
    , _toggle(false)
    , _enabled(false)
   {}
@@ -111,8 +111,8 @@ public:
   }
   void process(unsigned long now) {
     if(!_enabled) return;
-    if(now > _last + _interval) {
-      _last = now;
+    if(now - _timeStamp > _interval) {
+      _timeStamp = now;
       if(_toggle) {
         digitalWrite(_pin, HIGH);
         //TCL_LogInfo("ActivityLED HIGH");
@@ -127,7 +127,7 @@ public:
 private:
   unsigned char _pin;
   unsigned long _interval;
-  unsigned long _last;
+  unsigned long _timeStamp;
   bool _toggle;
   bool _enabled;
 };
@@ -140,7 +140,7 @@ public:
    , _col(0)
    , _row(0)
    , _interval(1000)
-   , _last(0)
+   , _timeStamp(0)
    , _count(0)
    , _enabled(false)
   {}
@@ -158,8 +158,8 @@ public:
   }
   void process(unsigned long now) {
     if(!_enabled) return;
-    if(now > _last + _interval) {
-      _last = now;
+    if(now - _timeStamp > _interval) {
+      _timeStamp = now;
       _lcd->setCursor(_col, _row);
       if((_count+3) % 4 == 0) {
         _lcd->print(" ");
@@ -184,13 +184,84 @@ private:
   unsigned char _col;
   unsigned char _row;
   unsigned long _interval;
-  unsigned long _last;
+  unsigned long _timeStamp;
   unsigned char _count;
+  bool _enabled;
+};
+
+class IndicationLCD
+{
+public:
+  IndicationLCD()
+   : _lcd(0)
+   , _col(0)
+   , _row(0)
+   , _indChar('I')
+   , _indDelay(300)
+   , _timeStamp(0)
+   , _on(false)
+   , _doShow(false)
+   , _enabled(false)
+  {}
+  void setup(LiquidCrystal_I2C *lcd, unsigned char col, unsigned char row, char indChar, unsigned long indDelay) {
+    if(indDelay >= 100) {
+      _lcd = lcd;
+      _col = col;
+      _row = row;
+      _indChar = indChar;
+      _indDelay = indDelay;
+      _enabled = true;
+    }
+    else {
+      _enabled = false;
+    }
+  }
+  void show(unsigned long now) {
+    if(!_enabled) return;
+    _timeStamp = now;
+    if(!_on) {
+      _on = true;
+      _lcd->setCursor(_col, _row);
+      _lcd->print(_indChar);
+    }
+  }
+  void show() {
+    if(!_enabled) return;
+    _doShow = true; // wait till next process call
+  }
+  void hide() {
+    if(!_enabled) return;
+    _doShow = false;
+    _timeStamp += _indDelay; // wait till next process call
+  }
+  void process(unsigned long now) {
+    if(!_enabled) return;
+    if(_doShow) {
+      _doShow = false;
+      show(now);
+    }
+    if(_on && now - _timeStamp > _indDelay) {
+      _on = false;
+      _lcd->setCursor(_col, _row);
+      _lcd->print(' ');
+    }
+  }
+private:
+  LiquidCrystal_I2C *_lcd;
+  unsigned char _col;
+  unsigned char _row;
+  char _indChar;
+  unsigned long _indDelay;
+  unsigned long _timeStamp;
+  bool _on;
+  bool _doShow;
   bool _enabled;
 };
 
 static ActivityLED activityLED;
 static ActivityLCD activityLCD;
+static IndicationLCD indicationLCD_send;
+static IndicationLCD indicationLCD_recv;
 
 void setup() {
   // put your setup code here, to run once:
@@ -247,10 +318,12 @@ void setup() {
   TCL_LogInfo("--- test TCL_Logger");
   
   // activity LED
-  activityLED.setup(LED_BUILTIN, 500); // pin out 13; 500ms on, 500ms off
+  activityLED.setup(LED_BUILTIN, 500); // 500ms on, 500ms off
   
   // activity LCD
-  activityLCD.setup(&lcd, LCD_ACTIVITY_COL, LCD_ACTIVITY_ROW, 1000); // col 20, row 1; 1s interval
+  activityLCD.setup(&lcd, LCD_ACTIVITY_COL, LCD_ACTIVITY_ROW, 1000); // 1s interval
+  indicationLCD_send.setup(&lcd, LCD_TCLITE_SEND_COL, LCD_TCLITE_SEND_ROW, (char)0x7e /* right arrow */, 300 * 1000); // 5min delay (not used)
+  indicationLCD_recv.setup(&lcd, LCD_TCLITE_RECV_COL, LCD_TCLITE_RECV_ROW, (char)0x7f /* left arrow */, 300); // 300ms delay
   
   /* TCLite */
   
@@ -391,5 +464,7 @@ void loop() {
   
   // activity LCD
   activityLCD.process(now);
+  indicationLCD_send.process(now);
+  indicationLCD_recv.process(now);
 }
 
