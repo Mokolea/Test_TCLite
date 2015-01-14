@@ -287,11 +287,11 @@ void setup() {
   lcd.print("v" TCL_VERSION " (" TCL_BUILD ")");
   
   updateLCD_TerminalState(TCL_FALSE, "");
-  updateLCD_RegistrationState(TCL_TERMINAL_REGISTRATION_STATE_NOT_REGISTERED, 0, 0, 0);
+  updateLCD_RegistrationState(TCL_TERMINAL_REGISTRATION_STATE_NOT_REGISTERED, 0, 0, 0, TCL_SYSTEM_MODE_NORMAL);
   updateLCD_Busy();
   
   //updateLCD_TerminalState(TCL_TRUE, "994110901");
-  //updateLCD_RegistrationState(TCL_TERMINAL_REGISTRATION_STATE_REGISTERED, 994, 1, 2);
+  //updateLCD_RegistrationState(TCL_TERMINAL_REGISTRATION_STATE_REGISTERED, 994, 1, 2, TCL_SYSTEM_MODE_NORMAL);
   
   // TFT
 #if TCL_LOG_TFT > 0

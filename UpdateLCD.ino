@@ -21,7 +21,7 @@ void updateLCD_TerminalState(TCL_Bool connected, TCL_Char* RFSI)
 }
 
 void updateLCD_RegistrationState(TCL_TerminalRegistrationStateType registrationState,
-  TCL_UInt16 rBaseNetwork, TCL_UInt8 rswIdentifier, TCL_UInt8 bsIdentifier)
+  TCL_UInt16 rBaseNetwork, TCL_UInt8 rswIdentifier, TCL_UInt8 bsIdentifier, TCL_SystemOperatingModeType systemMode)
 {
   // LCD
   lcd.setCursor(LCD_REGISTRATION_STATE_COL, LCD_REGISTRATION_STATE_ROW);
@@ -37,6 +37,25 @@ void updateLCD_RegistrationState(TCL_TerminalRegistrationStateType registrationS
     lcd.print(rswIdentifier, DEC);
     lcd.print(" ");
     lcd.print(bsIdentifier, DEC);
+    lcd.print(" ");
+    if(systemMode == TCL_SYSTEM_MODE_NORMAL) {
+      lcd.print("normal");
+    }
+    else if(systemMode == TCL_SYSTEM_MODE_BN_DISCONNECTED_FBM1) {
+      lcd.print("FBM 1");
+    }
+    else if(systemMode == TCL_SYSTEM_MODE_MSW_DISCONNECTED_FBM2) {
+      lcd.print("FBM 2");
+    }
+    else if(systemMode == TCL_SYSTEM_MODE_RSW_DISCONNECTED_FBM31) {
+      lcd.print("FBM 3.1");
+    }
+    else if(systemMode == TCL_SYSTEM_MODE_BSC_DISCONNECTED_FBM32) {
+      lcd.print("FBM 3.2");
+    }
+    else {
+      lcd.print("unknown");
+    }
   }
 }
 
