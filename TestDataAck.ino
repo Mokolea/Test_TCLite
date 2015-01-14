@@ -58,7 +58,7 @@ static void TCL_EvtDataAckReceivedCallback(const TCL_EvtDataAckReceived* event, 
   
   // LCD
   //updateLCD_DataIndication(TCL_TRUE, TCL_FALSE);
-  indicationLCD_recv.show();
+  indicationLCD_recv.show(millis());
   
   TCL_DataConstruct(&dataCompression, dataCompressionBuffer, sizeof(dataCompressionBuffer), error);
   if(TCL_TRUE == TCL_ErrorIsError(error)) {
