@@ -232,7 +232,7 @@ public:
   void hide() {
     if(!_enabled) return;
     _doShow = false;
-    _timeStamp += _indDelay; // wait till next process call
+    _timeStamp -= _indDelay; // wait till next process call
   }
   void process(unsigned long now) {
     if(!_enabled) return;
