@@ -282,7 +282,7 @@ void setup() {
   // LCD
   lcd.init(); // initialize the lcd
   lcd.backlight();
-  lcd.print("Test TCLite");
+  lcd.print(F("Test TCLite"));
   lcd.setCursor(0, 1);
   lcd.print("v" TCL_VERSION " (" TCL_BUILD ")");
   
@@ -301,7 +301,7 @@ void setup() {
   tft.setCursor(0, 0);
   tft.setTextColor(ILI9340_GREEN);
   tft.setTextSize(2);
-  tft.println("Test TCLite");
+  tft.println(F("Test TCLite"));
   tft.println("v" TCL_VERSION " (" TCL_BUILD ")");
   tft.println("-------------------------");
   tft.setTextColor(ILI9340_WHITE);
