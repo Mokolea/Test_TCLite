@@ -1,13 +1,13 @@
 /*
   Test TCLite on Arduino Due
-  
+
   Mario Ban, 12.2014, 01.2015
-  
+
   todo:
     - count and display at fix column the # of terminal-state events, registration-state events, ...
     - use tft diaplay for log (with colors) ok
     - register for all data callbacks, display data (hex/text: first 20 chars)
-  
+
 */
 
 #include <Wire.h>
@@ -92,13 +92,14 @@ class ActivityLED
 {
 public:
   ActivityLED()
-   : _pin(LED_BUILTIN)
-   , _interval(1000)
-   , _timeStamp(0)
-   , _toggle(false)
-   , _enabled(false)
+    : _pin(LED_BUILTIN)
+    , _interval(1000)
+    , _timeStamp(0)
+    , _toggle(false)
+    , _enabled(false)
   {}
-  void setup(unsigned char pin, unsigned long interval) {
+  void setup(unsigned char pin, unsigned long interval)
+  {
     if(interval >= 100) {
       _pin = pin;
       _interval = interval;
@@ -109,8 +110,11 @@ public:
       _enabled = false;
     }
   }
-  void process(unsigned long now) {
-    if(!_enabled) return;
+  void process(unsigned long now)
+  {
+    if(!_enabled) {
+      return;
+    }
     if(now - _timeStamp > _interval) {
       _timeStamp = now;
       if(_toggle) {
@@ -136,15 +140,16 @@ class ActivityLCD
 {
 public:
   ActivityLCD()
-   : _lcd(0)
-   , _col(0)
-   , _row(0)
-   , _interval(1000)
-   , _timeStamp(0)
-   , _count(0)
-   , _enabled(false)
+    : _lcd(0)
+    , _col(0)
+    , _row(0)
+    , _interval(1000)
+    , _timeStamp(0)
+    , _count(0)
+    , _enabled(false)
   {}
-  void setup(LiquidCrystal_I2C *lcd, unsigned char col, unsigned char row, unsigned long interval) {
+  void setup(LiquidCrystal_I2C* lcd, unsigned char col, unsigned char row, unsigned long interval)
+  {
     if(interval >= 100) {
       _lcd = lcd;
       _col = col;
@@ -156,18 +161,21 @@ public:
       _enabled = false;
     }
   }
-  void process(unsigned long now) {
-    if(!_enabled) return;
+  void process(unsigned long now)
+  {
+    if(!_enabled) {
+      return;
+    }
     if(now - _timeStamp > _interval) {
       _timeStamp = now;
       _lcd->setCursor(_col, _row);
-      if((_count+3) % 4 == 0) {
+      if((_count + 3) % 4 == 0) {
         _lcd->print(" ");
       }
-      else if((_count+2) % 4 == 0) {
+      else if((_count + 2) % 4 == 0) {
         _lcd->print("x");
       }
-      else if((_count+1) % 4 == 0) {
+      else if((_count + 1) % 4 == 0) {
         _lcd->print(" ");
       }
       else if(_count % 4 == 0) {
@@ -180,7 +188,7 @@ public:
     }
   }
 private:
-  LiquidCrystal_I2C *_lcd;
+  LiquidCrystal_I2C* _lcd;
   unsigned char _col;
   unsigned char _row;
   unsigned long _interval;
@@ -193,17 +201,18 @@ class IndicationLCD
 {
 public:
   IndicationLCD()
-   : _lcd(0)
-   , _col(0)
-   , _row(0)
-   , _indChar('I')
-   , _indDelay(300)
-   , _timeStamp(0)
-   , _on(false)
-   , _doShow(false)
-   , _enabled(false)
+    : _lcd(0)
+    , _col(0)
+    , _row(0)
+    , _indChar('I')
+    , _indDelay(300)
+    , _timeStamp(0)
+    , _on(false)
+    , _doShow(false)
+    , _enabled(false)
   {}
-  void setup(LiquidCrystal_I2C *lcd, unsigned char col, unsigned char row, char indChar, unsigned long indDelay) {
+  void setup(LiquidCrystal_I2C* lcd, unsigned char col, unsigned char row, char indChar, unsigned long indDelay)
+  {
     if(indDelay >= 100) {
       _lcd = lcd;
       _col = col;
@@ -216,8 +225,11 @@ public:
       _enabled = false;
     }
   }
-  void show(unsigned long now) {
-    if(!_enabled) return;
+  void show(unsigned long now)
+  {
+    if(!_enabled) {
+      return;
+    }
     _timeStamp = now;
     if(!_on) {
       _on = true;
@@ -225,17 +237,26 @@ public:
       _lcd->print(_indChar);
     }
   }
-  void show() {
-    if(!_enabled) return;
+  void show()
+  {
+    if(!_enabled) {
+      return;
+    }
     _doShow = true; // wait till next process call
   }
-  void hide() {
-    if(!_enabled) return;
+  void hide()
+  {
+    if(!_enabled) {
+      return;
+    }
     _doShow = false;
     _timeStamp -= _indDelay; // wait till next process call
   }
-  void process(unsigned long now) {
-    if(!_enabled) return;
+  void process(unsigned long now)
+  {
+    if(!_enabled) {
+      return;
+    }
     if(_doShow) {
       _doShow = false;
       show(now);
@@ -247,7 +268,7 @@ public:
     }
   }
 private:
-  LiquidCrystal_I2C *_lcd;
+  LiquidCrystal_I2C* _lcd;
   unsigned char _col;
   unsigned char _row;
   char _indChar;
@@ -263,7 +284,8 @@ static ActivityLCD activityLCD;
 static IndicationLCD indicationLCD_send;
 static IndicationLCD indicationLCD_recv;
 
-void setup() {
+void setup()
+{
   // put your setup code here, to run once:
   
   // Logger
@@ -424,7 +446,8 @@ void setup() {
   }
 }
 
-void loop() {
+void loop()
+{
   // put your main code here, to run repeatedly:
   
   /* TCLite */

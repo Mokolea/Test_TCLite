@@ -1,8 +1,8 @@
 /*
   Test TCLite on Arduino Due
-  
+
   Mario Ban, 01.2015
-  
+
 */
 
 void updateLCD_TerminalState(TCL_Bool connected, TCL_Char* RFSI)
@@ -21,7 +21,7 @@ void updateLCD_TerminalState(TCL_Bool connected, TCL_Char* RFSI)
 }
 
 void updateLCD_RegistrationState(TCL_TerminalRegistrationStateType registrationState,
-  TCL_UInt16 rBaseNetwork, TCL_UInt8 rswIdentifier, TCL_UInt8 bsIdentifier, TCL_SystemOperatingModeType systemMode)
+                                 TCL_UInt16 rBaseNetwork, TCL_UInt8 rswIdentifier, TCL_UInt8 bsIdentifier, TCL_SystemOperatingModeType systemMode)
 {
   // LCD
   lcd.setCursor(LCD_REGISTRATION_STATE_COL, LCD_REGISTRATION_STATE_ROW);
@@ -107,7 +107,7 @@ void updateLCD_Data(const TCL_Data* data)
   TCL_UInt8* dataPointer = TCL_DataGetDataPointer(data);
   
 #if 0
-  for(TCL_UInt32 i=0; i<TCL_DataGetSize(data) && i<4; i++) {
+  for(TCL_UInt32 i = 0; i < TCL_DataGetSize(data) && i < 4; i++) {
     char hex[6];
     sprintf(hex, "0x%02x ", dataPointer[i]);
     lcd.print(hex);
@@ -115,7 +115,7 @@ void updateLCD_Data(const TCL_Data* data)
 #endif
   
   // print max first 20 data bytes
-  for(TCL_UInt32 i=0; i<TCL_DataGetSize(data) && i<20; i++) {
+  for(TCL_UInt32 i = 0; i < TCL_DataGetSize(data) && i < 20; i++) {
     if(dataPointer[i] >= 0x20 && dataPointer[i] <= 0x7e) {
       lcd.print((TCL_Char)dataPointer[i]); /* printable */
     }

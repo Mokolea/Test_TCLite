@@ -1,8 +1,8 @@
 /*
   Test TCLite on Arduino Due
-  
+
   Mario Ban, 01.2015
-  
+
 */
 
 static void TCL_RspDataNotAckSentCallback(const TCL_RspDataNotAckSent* response, TCL_Error* error)
