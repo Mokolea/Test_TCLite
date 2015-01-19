@@ -58,6 +58,10 @@ Adafruit_ILI9340 tft = Adafruit_ILI9340(_cs, _dc, _rst); // Arduino Uno: MOSI 11
 #define LCD_ACTIVITY_COL             19   /* 1 char */
 #define LCD_ACTIVITY_ROW              0
 
+#define BUTTON_PIN_SEND_DATA_ACK       22
+#define BUTTON_PIN_SEND_DATA_NOT_ACK   23
+#define BUTTON_DEBOUNCE_DELAY         100   /* [ms] */
+
 #define TCL_DATA_ACK_SEND_BACK   1   /* 1: enable, 0: disable */
 #define TCL_DATA_ACK_SEND_CASE   4   /* send-data-ack test-case: 1..5 */
 
@@ -96,10 +100,9 @@ public:
     , _interval(1000)
     , _timeStamp(0)
     , _toggle(false)
-    , _enabled(false)
-  {}
-  void setup(unsigned char pin, unsigned long interval)
-  {
+    , _enabled(false) {
+  }
+  void setup(unsigned char pin, unsigned long interval) {
     if(interval >= 100) {
       _pin = pin;
       _interval = interval;
@@ -110,8 +113,7 @@ public:
       _enabled = false;
     }
   }
-  void process(unsigned long now)
-  {
+  void process(unsigned long now) {
     if(!_enabled) {
       return;
     }
@@ -146,10 +148,9 @@ public:
     , _interval(1000)
     , _timeStamp(0)
     , _count(0)
-    , _enabled(false)
-  {}
-  void setup(LiquidCrystal_I2C* lcd, unsigned char col, unsigned char row, unsigned long interval)
-  {
+    , _enabled(false) {
+  }
+  void setup(LiquidCrystal_I2C* lcd, unsigned char col, unsigned char row, unsigned long interval) {
     if(interval >= 100) {
       _lcd = lcd;
       _col = col;
@@ -161,8 +162,7 @@ public:
       _enabled = false;
     }
   }
-  void process(unsigned long now)
-  {
+  void process(unsigned long now) {
     if(!_enabled) {
       return;
     }
@@ -209,10 +209,9 @@ public:
     , _timeStamp(0)
     , _on(false)
     , _doShow(false)
-    , _enabled(false)
-  {}
-  void setup(LiquidCrystal_I2C* lcd, unsigned char col, unsigned char row, char indChar, unsigned long indDelay)
-  {
+    , _enabled(false) {
+  }
+  void setup(LiquidCrystal_I2C* lcd, unsigned char col, unsigned char row, char indChar, unsigned long indDelay) {
     if(indDelay >= 100) {
       _lcd = lcd;
       _col = col;
@@ -225,8 +224,7 @@ public:
       _enabled = false;
     }
   }
-  void show(unsigned long now)
-  {
+  void show(unsigned long now) {
     if(!_enabled) {
       return;
     }
@@ -237,23 +235,20 @@ public:
       _lcd->print(_indChar);
     }
   }
-  void show()
-  {
+  void show() {
     if(!_enabled) {
       return;
     }
     _doShow = true; // wait till next process call
   }
-  void hide()
-  {
+  void hide() {
     if(!_enabled) {
       return;
     }
     _doShow = false;
     _timeStamp -= _indDelay; // wait till next process call
   }
-  void process(unsigned long now)
-  {
+  void process(unsigned long now) {
     if(!_enabled) {
       return;
     }
@@ -279,10 +274,63 @@ private:
   bool _enabled;
 };
 
+class InputDebounce
+{
+public:
+  InputDebounce()
+    : _pinIn(0)
+    , _stateOn(false)
+    , _timeStamp(0)
+    , _debDelay(0)
+    , _stateOnCount(0)
+    , _enabled(false) {
+  }
+  void setup(uint8_t pinIn, unsigned long debDelay) {
+    if(pinIn > 0) {
+      _pinIn = pinIn;
+      _debDelay = debDelay;
+      pinMode(_pinIn, INPUT);
+      _enabled = true;
+    }
+    else {
+      _enabled = false;
+    }
+  }
+  unsigned long process(unsigned long now) { // return pressed time if on
+    if(!_enabled) {
+      return 0;
+    }
+    if(now - _timeStamp > _debDelay) {
+      int value = digitalRead(_pinIn); // LOW when button pressed (on)
+      if(_stateOn != !value) {
+        _stateOn = !value;
+        _timeStamp = now;
+        if(_stateOn) {
+          _stateOnCount++;
+        }
+        return _stateOn ? 1 : 0;
+      }
+    }
+    return _stateOn ? now - _timeStamp : 0;
+  }
+  unsigned long getStateOnCount() {
+    return _stateOnCount;
+  }
+private:
+  uint8_t _pinIn;
+  bool _stateOn;
+  unsigned long _timeStamp; // last state change
+  unsigned long _debDelay;
+  unsigned long _stateOnCount;
+  bool _enabled;
+};
+
 static ActivityLED activityLED;
 static ActivityLCD activityLCD;
 static IndicationLCD indicationLCD_send;
 static IndicationLCD indicationLCD_recv;
+static InputDebounce buttonSendDataAck;
+static InputDebounce buttonSendDataNotAck;
 
 void setup()
 {
@@ -346,6 +394,10 @@ void setup()
   activityLCD.setup(&lcd, LCD_ACTIVITY_COL, LCD_ACTIVITY_ROW, 1000); // 1s interval (cycle through 4 chars)
   indicationLCD_send.setup(&lcd, LCD_TCLITE_SEND_COL, LCD_TCLITE_SEND_ROW, (char)0x7e /* right arrow */, 300 * 1000); // 5min delay (not used)
   indicationLCD_recv.setup(&lcd, LCD_TCLITE_RECV_COL, LCD_TCLITE_RECV_ROW, (char)0x7f /* left arrow */, 300); // 300ms delay
+  
+  // buttons
+  buttonSendDataAck.setup(BUTTON_PIN_SEND_DATA_ACK, BUTTON_DEBOUNCE_DELAY);
+  buttonSendDataNotAck.setup(BUTTON_PIN_SEND_DATA_NOT_ACK, BUTTON_DEBOUNCE_DELAY);
   
   /* TCLite */
   
@@ -450,6 +502,9 @@ void loop()
 {
   // put your main code here, to run repeatedly:
   
+  static unsigned int buttonStateOnCount_SendDataAck = 0;
+  static unsigned int buttonStateOnCount_SendDataNotAck = 0;
+  
   /* TCLite */
   
   /* processing */
@@ -481,6 +536,33 @@ void loop()
   delay(s_processingInterval);
   
   unsigned long now = millis();
+  
+  // buttons
+  unsigned int buttonOnTime_SendDataAck = buttonSendDataAck.process(now);
+  unsigned int buttonOnTime_SendDataNotAck = buttonSendDataNotAck.process(now);
+  
+  if(buttonOnTime_SendDataAck) {
+    unsigned int count = buttonSendDataAck.getStateOnCount();
+    if(buttonStateOnCount_SendDataAck != count) {
+      buttonStateOnCount_SendDataAck = count;
+      s_send_1 = TCL_TRUE;
+      TCL_LogInfo("Button TCL_ReqSendDataAck pressed");
+    }
+    else {
+      TCL_LogInfo("Button TCL_ReqSendDataAck still pressed"); // change this; log count, time
+    }
+  }
+  if(buttonOnTime_SendDataNotAck) {
+    unsigned int count = buttonSendDataNotAck.getStateOnCount();
+    if(buttonStateOnCount_SendDataNotAck != count) {
+      buttonStateOnCount_SendDataNotAck = count;
+      s_send_2 = TCL_TRUE;
+      TCL_LogInfo("Button TCL_ReqSendDataNotAck pressed");
+    }
+    else {
+      TCL_LogInfo("Button TCL_ReqSendDataNotAck still pressed"); // change this; log count, time
+    }
+  }
   
   // activity LED
   activityLED.process(now);
