@@ -533,8 +533,13 @@ void loop()
     }
   }
   
-  // todo: check if Serial1.available() or write buffer remaining
-  delay(s_processingInterval);
+  // todo: check if write buffer remaining (TTCI_SL PropagateWriteToListeners)
+  if(Serial1 && Serial1.available()) {
+    delay(1); // [ms]
+  }
+  else {
+    delay(s_processingInterval);
+  }
   
   unsigned long now = millis();
   
