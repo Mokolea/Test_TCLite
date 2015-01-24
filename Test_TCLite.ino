@@ -533,6 +533,7 @@ void loop()
     }
   }
   
+  // todo: check if Serial1.available() or write buffer remaining
   delay(s_processingInterval);
   
   unsigned long now = millis();
