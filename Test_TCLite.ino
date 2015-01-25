@@ -13,7 +13,8 @@
 #include <Wire.h>
 #include "LiquidCrystal_I2C.h"
 
-#define TCL_LOG_TFT_ADA_ILI9340   1   /* 1: enable, 0: disable */
+#define TCL_LOG_TFT_ADA_ILI9340   0   /* 1: enable, 0: disable */
+#define TCL_LOG_TFT_ADA_HX8357    1   /* 1: enable, 0: disable */
 
 #if TCL_LOG_TFT_ADA_ILI9340 > 0
 #include "SPI.h"
@@ -29,6 +30,16 @@
 #define _rst 8
 #endif
 
+#if TCL_LOG_TFT_ADA_HX8357 > 0
+#include "SPI.h"
+#include "Adafruit_GFX.h"
+#include "Adafruit_HX8357.h"
+// Arduino Due hardware SPI pins
+#define TFT_CS 10
+#define TFT_DC 9
+#define TFT_RST 8 // RST can be set to -1 if you tie it to Arduino's reset
+#endif
+
 #include "TCLite.h"
 
 static LiquidCrystal_I2C lcd(0x27, 20, 4); // set the LCD address to 0x27 for a 20 chars and 4 line display
@@ -38,6 +49,11 @@ static LiquidCrystal_I2C lcd(0x27, 20, 4); // set the LCD address to 0x27 for a 
 //Adafruit_ILI9340 tft = Adafruit_ILI9340(_cs, _dc, _mosi, _sclk, _rst, _miso);
 // Use hardware SPI
 Adafruit_ILI9340 tft = Adafruit_ILI9340(_cs, _dc, _rst); // Arduino Uno: MOSI 11, SCLK 13
+#endif
+
+#if TCL_LOG_TFT_ADA_HX8357 > 0
+// Use hardware SPI
+Adafruit_HX8357 tft = Adafruit_HX8357(TFT_CS, TFT_DC, TFT_RST); // Arduino Uno: #13, #12, #11 and the above for CS/DC
 #endif
 
 #define APPLICATION_ID         100
@@ -375,6 +391,21 @@ void setup()
   tft.println("v" TCL_VERSION " (" TCL_BUILD ")");
   tft.println("-------------------------");
   tft.setTextColor(ILI9340_WHITE);
+  tft.setTextSize(1);
+#endif
+  
+  // TFT
+#if TCL_LOG_TFT_ADA_HX8357 > 0
+  tft.begin(HX8357D);
+  tft.setRotation(1);
+  tft.fillScreen(HX8357_BLACK);
+  tft.setCursor(0, 0);
+  tft.setTextColor(HX8357_GREEN);
+  tft.setTextSize(2);
+  tft.println(F("Test TCLite"));
+  tft.println("v" TCL_VERSION " (" TCL_BUILD ")");
+  tft.println("-------------------------");
+  tft.setTextColor(HX8357_WHITE);
   tft.setTextSize(1);
 #endif
   
