@@ -13,9 +13,9 @@
 #include <Wire.h>
 #include "LiquidCrystal_I2C.h"
 
-#define TCL_LOG_TFT   1   /* 1: enable, 0: disable */
+#define TCL_LOG_TFT_ADA_ILI9340   1   /* 1: enable, 0: disable */
 
-#if TCL_LOG_TFT > 0
+#if TCL_LOG_TFT_ADA_ILI9340 > 0
 #include "SPI.h"
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9340.h"
@@ -33,7 +33,7 @@
 
 static LiquidCrystal_I2C lcd(0x27, 20, 4); // set the LCD address to 0x27 for a 20 chars and 4 line display
 
-#if TCL_LOG_TFT > 0
+#if TCL_LOG_TFT_ADA_ILI9340 > 0
 // Using software SPI is really not suggested, its incredibly slow
 //Adafruit_ILI9340 tft = Adafruit_ILI9340(_cs, _dc, _mosi, _sclk, _rst, _miso);
 // Use hardware SPI
@@ -364,7 +364,7 @@ void setup()
   //updateLCD_RegistrationState(TCL_TERMINAL_REGISTRATION_STATE_REGISTERED, 994, 1, 2, TCL_SYSTEM_MODE_NORMAL);
   
   // TFT
-#if TCL_LOG_TFT > 0
+#if TCL_LOG_TFT_ADA_ILI9340 > 0
   tft.begin();
   tft.setRotation(1);
   tft.fillScreen(ILI9340_BLACK);
