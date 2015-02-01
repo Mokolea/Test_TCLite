@@ -379,7 +379,7 @@ void setup()
   //updateLCD_TerminalState(TCL_TRUE, "994110901");
   //updateLCD_RegistrationState(TCL_TERMINAL_REGISTRATION_STATE_REGISTERED, 994, 1, 2, TCL_SYSTEM_MODE_NORMAL);
   
-  // TFT
+  // TFT Adafruit ILI9340
 #if TCL_LOG_TFT_ADA_ILI9340 > 0
   tft.begin();
   tft.setRotation(1);
@@ -394,7 +394,7 @@ void setup()
   tft.setTextSize(1);
 #endif
   
-  // TFT
+  // TFT Adafruit HX8357
 #if TCL_LOG_TFT_ADA_HX8357 > 0
   tft.begin(HX8357D);
   tft.setRotation(1);
