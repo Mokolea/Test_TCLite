@@ -13,8 +13,8 @@
 #include <Wire.h>
 #include "LiquidCrystal_I2C.h"
 
-#define TCL_LOG_TFT_ADA_ILI9340   0   /* 1: enable, 0: disable */
-#define TCL_LOG_TFT_ADA_HX8357    1   /* 1: enable, 0: disable */
+#define TCL_LOG_TFT_ADA_ILI9340   0   /* TFT 2.2"; 1: enable, 0: disable */
+#define TCL_LOG_TFT_ADA_HX8357    1   /* TFT 3.5"; 1: enable, 0: disable */
 
 #if TCL_LOG_TFT_ADA_ILI9340 > 0
 #include "SPI.h"
@@ -116,9 +116,11 @@ public:
     , _interval(1000)
     , _timeStamp(0)
     , _toggle(false)
-    , _enabled(false) {
+    , _enabled(false)
+  {
   }
-  void setup(unsigned char pin, unsigned long interval) {
+  void setup(unsigned char pin, unsigned long interval)
+  {
     if(interval >= 100) {
       _pin = pin;
       _interval = interval;
@@ -129,7 +131,8 @@ public:
       _enabled = false;
     }
   }
-  void process(unsigned long now) {
+  void process(unsigned long now)
+  {
     if(!_enabled) {
       return;
     }
@@ -164,9 +167,11 @@ public:
     , _interval(1000)
     , _timeStamp(0)
     , _count(0)
-    , _enabled(false) {
+    , _enabled(false)
+  {
   }
-  void setup(LiquidCrystal_I2C* lcd, unsigned char col, unsigned char row, unsigned long interval) {
+  void setup(LiquidCrystal_I2C* lcd, unsigned char col, unsigned char row, unsigned long interval)
+  {
     if(interval >= 100) {
       _lcd = lcd;
       _col = col;
@@ -178,7 +183,8 @@ public:
       _enabled = false;
     }
   }
-  void process(unsigned long now) {
+  void process(unsigned long now)
+  {
     if(!_enabled) {
       return;
     }
@@ -225,9 +231,11 @@ public:
     , _timeStamp(0)
     , _on(false)
     , _doShow(false)
-    , _enabled(false) {
+    , _enabled(false)
+  {
   }
-  void setup(LiquidCrystal_I2C* lcd, unsigned char col, unsigned char row, char indChar, unsigned long indDelay) {
+  void setup(LiquidCrystal_I2C* lcd, unsigned char col, unsigned char row, char indChar, unsigned long indDelay)
+  {
     if(indDelay >= 100) {
       _lcd = lcd;
       _col = col;
@@ -240,7 +248,8 @@ public:
       _enabled = false;
     }
   }
-  void show(unsigned long now) {
+  void show(unsigned long now)
+  {
     if(!_enabled) {
       return;
     }
@@ -251,20 +260,23 @@ public:
       _lcd->print(_indChar);
     }
   }
-  void show() {
+  void show()
+  {
     if(!_enabled) {
       return;
     }
     _doShow = true; // wait till next process call
   }
-  void hide() {
+  void hide()
+  {
     if(!_enabled) {
       return;
     }
     _doShow = false;
     _timeStamp -= _indDelay; // wait till next process call
   }
-  void process(unsigned long now) {
+  void process(unsigned long now)
+  {
     if(!_enabled) {
       return;
     }
@@ -299,9 +311,11 @@ public:
     , _timeStamp(0)
     , _debDelay(0)
     , _stateOnCount(0)
-    , _enabled(false) {
+    , _enabled(false)
+  {
   }
-  void setup(uint8_t pinIn, unsigned long debDelay) {
+  void setup(uint8_t pinIn, unsigned long debDelay)
+  {
     if(pinIn > 0) {
       _pinIn = pinIn;
       _debDelay = debDelay;
@@ -312,7 +326,8 @@ public:
       _enabled = false;
     }
   }
-  unsigned long process(unsigned long now) { // return pressed time if on
+  unsigned long process(unsigned long now)   // return pressed time if on
+  {
     if(!_enabled) {
       return 0;
     }
@@ -329,7 +344,8 @@ public:
     }
     return _stateOn ? now - _timeStamp : 0;
   }
-  unsigned long getStateOnCount() {
+  unsigned long getStateOnCount()
+  {
     return _stateOnCount;
   }
 private:
