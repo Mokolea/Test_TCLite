@@ -1,8 +1,15 @@
 # Test TCLite
 Test usage of library TCLite on an Arduino Due board
+(Terminal Controller Lite - control TETRAPOL radio terminal)
 
 Current TCLite: *Version 1.2.0 2015-04-07*
 
 ## Build
- * Open in Arduino IDE: Test_TCLite.ino
- * Depends on library: TCLite
+ - Open in Arduino IDE: Test_TCLite.ino
+ - Target: Arduino Due (programming port)
+
+## Dependencies (libraries)
+ - TCLite
+ - LiquidCrystal_I2C
+ - Adafruit_GFX
+ - Adafruit_HX8357
