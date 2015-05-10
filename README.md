@@ -1,6 +1,7 @@
 # Test TCLite
 Test usage of library TCLite on an Arduino Due board
-(Terminal Controller Lite - control TETRAPOL radio terminal)
+
+Terminal Controller Lite - control a TETRAPOL radio terminal (send/receive data)
 
 Current TCLite: *Version 1.2.0 2015-04-07*
 
