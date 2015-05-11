@@ -16,6 +16,7 @@ Current TCLite: *Version 1.2.0 2015-04-07*
  - Adafruit_HX8357
 
 ## Hardware Setup
+ - Schematic (Eagle) ...
  - ...
 
 
