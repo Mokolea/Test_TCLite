@@ -5,7 +5,7 @@
 
 */
 
-void updateLCD_TerminalState(TCL_Bool connected, TCL_Char* RFSI)
+void updateLCD_TerminalState(TCL_Bool connected, const TCL_Char* RFSI)
 {
   // LCD
   lcd.setCursor(LCD_TERMINAL_STATE_COL, LCD_TERMINAL_STATE_ROW);
