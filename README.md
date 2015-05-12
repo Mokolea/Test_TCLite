@@ -16,7 +16,16 @@ Current TCLite: *Version 1.2.0 2015-04-07*
  - Adafruit_HX8357
 
 ## Hardware Setup
- - Schematic (Eagle) ...
+Schematic (Eagle) ...
+
+## Parts list
+ - Arduino Due
+ - D Sub 9 Pol MAX232 5V M
+ - Level shifter 3.3V <-> 5V
+ - LCD 20x4 I2C
+ - TFT 3.5" SPI Adafruit 2050
+ - I/O Buttons LEDs ...
+ - TTL 232R 3.3V FTDI Adafruit 70
  - ...
 
 
