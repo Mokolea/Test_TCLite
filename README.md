@@ -22,11 +22,11 @@ Schematic (Eagle), pic, ...
  - [Arduino Due](http://www.arduino.cc/en/Main/ArduinoBoardDue),
    [Getting started](http://www.arduino.cc/en/Guide/ArduinoDue)
  - Serial <-> TTL D-Sub 9 M MAX232 5V
- - Level shifter 3.3V <-> 5V, Adafruit 757
+ - Level shifter 3.3V <-> 5V, [Adafruit 757](http://www.adafruit.com/product/757)
  - LCD 20x4 I2C 5V
- - TFT 3.5" SPI 3.3V, Adafruit 2050
+ - TFT 3.5" SPI 3.3V, [Adafruit 2050](http://www.adafruit.com/product/2050)
  - I/O Buttons LEDs ...
- - TTL 232R 3.3V FTDI, Adafruit 70
+ - TTL 232R 3.3V FTDI, [Adafruit 70](http://www.adafruit.com/product/70)
  - ...
 
 
