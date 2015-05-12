@@ -19,7 +19,7 @@ Current TCLite: *Version 1.2.0 2015-04-07*
 Schematic (Eagle), pic, ...
 
 ## Parts list
- - [Arduino Due](http://www.arduino.cc/en/Guide/ArduinoDue)
+ - [Arduino Due](http://www.arduino.cc/en/Main/ArduinoBoardDue), [Guide](http://www.arduino.cc/en/Guide/ArduinoDue)
  - Serial <-> TTL D-Sub 9 M MAX232 5V
  - Level shifter 3.3V <-> 5V, Adafruit 757
  - LCD 20x4 I2C 5V
