@@ -30,7 +30,7 @@ Schematic (Eagle), pic, ...
  - ...
 
 ## Test equipment
- - TETRAPOL Data Simulator
- - TETRAPOL radio terminal TPH 700, serial data cable
+ - TETRAPOL Data Simulator, serial null-modem cable
+ - TETRAPOL radio terminal TPH 700, serial data adapter cable
 
 -- Mario
