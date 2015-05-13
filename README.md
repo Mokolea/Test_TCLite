@@ -1,5 +1,5 @@
 # Test TCLite
-Test usage of library TCLite on an Arduino Due board
+Test usage of library TCLite on an [Arduino Due](http://www.arduino.cc/en/Main/ArduinoBoardDue) board
 
 Terminal Controller Lite - control a TETRAPOL radio terminal (send/receive data)
 
@@ -29,5 +29,8 @@ Schematic (Eagle), pic, ...
  - TTL 232R 3.3V FTDI, [Adafruit 70](http://www.adafruit.com/product/70)
  - ...
 
+## Test equipment
+ - TETRAPOL Data Simulator
+ - TETRAPOL radio terminal TPH 700, serial data cable
 
 -- Mario
