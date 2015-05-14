@@ -6,11 +6,11 @@ Terminal Controller Lite - control a TETRAPOL radio terminal to handle data tran
 Current TCLite: *Version 1.2.0 2015-04-07*
 
 ## Build
- - Open in Arduino IDE (my version is 1.6.x, Mac OS X): Test_TCLite.ino
- - Target: Arduino Due (programming port)
+ - Open in Arduino IDE (currently using v1.6.x, Mac OS X): Test_TCLite.ino
+ - Select target: Arduino Due (programming port)
 
 ## Dependencies (libraries)
- - TCLite
+ - TCLite, (c) Atos AG Switzerland
  - LiquidCrystal_I2C
  - Adafruit_GFX
  - Adafruit_HX8357
