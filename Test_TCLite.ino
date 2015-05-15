@@ -13,7 +13,7 @@
 #include <Wire.h>
 #include "LiquidCrystal_I2C.h"
 
-/* TFT: see also TCL_Logger.c */
+/* TFT: see also port_TCL_Logger */
 #define TCL_LOG_TFT_ADA_ILI9340   0   /* TFT 2.2"; 1: enable, 0: disable */
 #define TCL_LOG_TFT_ADA_HX8357    1   /* TFT 3.5"; 1: enable, 0: disable */
 

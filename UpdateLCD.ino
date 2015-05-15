@@ -5,7 +5,7 @@
 
 */
 
-void updateLCD_TerminalState(TCL_Bool connected, const TCL_Char* RFSI)
+static void updateLCD_TerminalState(TCL_Bool connected, const TCL_Char* RFSI)
 {
   // LCD
   lcd.setCursor(LCD_TERMINAL_STATE_COL, LCD_TERMINAL_STATE_ROW);
@@ -20,8 +20,8 @@ void updateLCD_TerminalState(TCL_Bool connected, const TCL_Char* RFSI)
   }
 }
 
-void updateLCD_RegistrationState(TCL_TerminalRegistrationStateType registrationState,
-                                 TCL_UInt16 rBaseNetwork, TCL_UInt8 rswIdentifier, TCL_UInt8 bsIdentifier, TCL_SystemOperatingModeType systemMode)
+static void updateLCD_RegistrationState(TCL_TerminalRegistrationStateType registrationState,
+                                        TCL_UInt16 rBaseNetwork, TCL_UInt8 rswIdentifier, TCL_UInt8 bsIdentifier, TCL_SystemOperatingModeType systemMode)
 {
   // LCD
   lcd.setCursor(LCD_REGISTRATION_STATE_COL, LCD_REGISTRATION_STATE_ROW);
@@ -59,7 +59,7 @@ void updateLCD_RegistrationState(TCL_TerminalRegistrationStateType registrationS
   }
 }
 
-void updateLCD_Busy()
+static void updateLCD_Busy()
 {
   TCL_Bool busy = s_busy_1 || s_busy_2;
   
@@ -76,7 +76,7 @@ void updateLCD_Busy()
 }
 
 #if 0
-void updateLCD_DataIndication(TCL_Bool indStart, TCL_Bool dirSend)
+static void updateLCD_DataIndication(TCL_Bool indStart, TCL_Bool dirSend)
 {
   char c = ' ';
   
@@ -97,7 +97,7 @@ void updateLCD_DataIndication(TCL_Bool indStart, TCL_Bool dirSend)
 }
 #endif
 
-void updateLCD_Data(const TCL_Data* data)
+static void updateLCD_Data(const TCL_Data* data)
 {
   // LCD
   lcd.setCursor(LCD_TCLITE_DATA_RECV_COL, LCD_TCLITE_DATA_RECV_ROW);
