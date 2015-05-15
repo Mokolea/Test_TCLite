@@ -277,32 +277,7 @@ void loop()
   static unsigned int buttonStateOnCount_SendDataNotAck = 0;
   
   /* TCLite */
-  
-  /* processing */
-  
-  TCL_Process(&s_error);
-  if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
-    TCL_LogError("TCL_Process failed");
-    exit(EXIT_FAILURE);
-  }
-  
-  if(s_send_1 && s_connected && s_registrationState == TCL_TERMINAL_REGISTRATION_STATE_REGISTERED && !s_busy) {
-    s_send_1 = TCL_FALSE;
-    /* TCL_ReqSendDataAck */
-    Send_ReqSendDataAck(&s_error);
-    if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
-      exit(EXIT_FAILURE);
-    }
-  }
-  
-  if(s_send_2 && s_connected && s_registrationState == TCL_TERMINAL_REGISTRATION_STATE_REGISTERED && !s_busy) {
-    s_send_2 = TCL_FALSE;
-    /* TCL_ReqSendDataNotAck */
-    Send_ReqSendDataNotAck(&s_error);
-    if(TCL_TRUE == TCL_ErrorIsError(&s_error)) {
-      exit(EXIT_FAILURE);
-    }
-  }
+  loop_TCLite();
   
   // todo: check if write buffer remaining (TTCI_SL PropagateWriteToListeners)
   if(Serial1 && Serial1.available()) {
