@@ -112,44 +112,9 @@ static TCL_Char s_rfsiBuffer[TCL_ADDRESS_RFSI_STRING_BUFFER_SIZE];
 class ActivityLED
 {
 public:
-  ActivityLED()
-    : _pin(LED_BUILTIN)
-    , _interval(1000)
-    , _timeStamp(0)
-    , _toggle(false)
-    , _enabled(false)
-  {
-  }
-  void setup(unsigned char pin, unsigned long interval)
-  {
-    if(interval >= 100) {
-      _pin = pin;
-      _interval = interval;
-      pinMode(_pin, OUTPUT);
-      _enabled = true;
-    }
-    else {
-      _enabled = false;
-    }
-  }
-  void process(unsigned long now)
-  {
-    if(!_enabled) {
-      return;
-    }
-    if(now - _timeStamp > _interval) {
-      _timeStamp = now;
-      if(_toggle) {
-        digitalWrite(_pin, HIGH);
-        //TCL_LogInfo("ActivityLED HIGH");
-      }
-      else {
-        digitalWrite(_pin, LOW);
-        //TCL_LogInfo("ActivityLED LOW");
-      }
-      _toggle = !_toggle;
-    }
-  }
+  ActivityLED();
+  void setup(unsigned char pin, unsigned long interval);
+  void process(unsigned long now);
 private:
   unsigned char _pin;
   unsigned long _interval;
@@ -161,55 +126,9 @@ private:
 class ActivityLCD
 {
 public:
-  ActivityLCD()
-    : _lcd(0)
-    , _col(0)
-    , _row(0)
-    , _interval(1000)
-    , _timeStamp(0)
-    , _count(0)
-    , _enabled(false)
-  {
-  }
-  void setup(LiquidCrystal_I2C* lcd, unsigned char col, unsigned char row, unsigned long interval)
-  {
-    if(interval >= 100) {
-      _lcd = lcd;
-      _col = col;
-      _row = row;
-      _interval = interval;
-      _enabled = true;
-    }
-    else {
-      _enabled = false;
-    }
-  }
-  void process(unsigned long now)
-  {
-    if(!_enabled) {
-      return;
-    }
-    if(now - _timeStamp > _interval) {
-      _timeStamp = now;
-      _lcd->setCursor(_col, _row);
-      if((_count + 3) % 4 == 0) {
-        _lcd->print(" ");
-      }
-      else if((_count + 2) % 4 == 0) {
-        _lcd->print("x");
-      }
-      else if((_count + 1) % 4 == 0) {
-        _lcd->print(" ");
-      }
-      else if(_count % 4 == 0) {
-        _lcd->print("o");
-      }
-      else {
-        _lcd->print("?"); /* never */
-      }
-      _count++;
-    }
-  }
+  ActivityLCD();
+  void setup(LiquidCrystal_I2C* lcd, unsigned char col, unsigned char row, unsigned long interval);
+  void process(unsigned long now);
 private:
   LiquidCrystal_I2C* _lcd;
   unsigned char _col;
@@ -223,74 +142,12 @@ private:
 class IndicationLCD
 {
 public:
-  IndicationLCD()
-    : _lcd(0)
-    , _col(0)
-    , _row(0)
-    , _indChar('I')
-    , _indDelay(300)
-    , _timeStamp(0)
-    , _on(false)
-    , _doShow(false)
-    , _enabled(false)
-  {
-  }
-  void setup(LiquidCrystal_I2C* lcd, unsigned char col, unsigned char row, char indChar, unsigned long indDelay)
-  {
-    if(indDelay >= 100) {
-      _lcd = lcd;
-      _col = col;
-      _row = row;
-      _indChar = indChar;
-      _indDelay = indDelay;
-      _enabled = true;
-    }
-    else {
-      _enabled = false;
-    }
-  }
-  void show(unsigned long now)
-  {
-    if(!_enabled) {
-      return;
-    }
-    _timeStamp = now;
-    if(!_on) {
-      _on = true;
-      _lcd->setCursor(_col, _row);
-      _lcd->print(_indChar);
-    }
-  }
-  void show()
-  {
-    if(!_enabled) {
-      return;
-    }
-    _doShow = true; // wait till next process call
-  }
-  void hide()
-  {
-    if(!_enabled) {
-      return;
-    }
-    _doShow = false;
-    _timeStamp -= _indDelay; // wait till next process call
-  }
-  void process(unsigned long now)
-  {
-    if(!_enabled) {
-      return;
-    }
-    if(_doShow) {
-      _doShow = false;
-      show(now);
-    }
-    if(_on && now - _timeStamp > _indDelay) {
-      _on = false;
-      _lcd->setCursor(_col, _row);
-      _lcd->print(' ');
-    }
-  }
+  IndicationLCD();
+  void setup(LiquidCrystal_I2C* lcd, unsigned char col, unsigned char row, char indChar, unsigned long indDelay);
+  void show(unsigned long now);
+  void show();
+  void hide();
+  void process(unsigned long now);
 private:
   LiquidCrystal_I2C* _lcd;
   unsigned char _col;
@@ -306,49 +163,10 @@ private:
 class InputDebounce
 {
 public:
-  InputDebounce()
-    : _pinIn(0)
-    , _stateOn(false)
-    , _timeStamp(0)
-    , _debDelay(0)
-    , _stateOnCount(0)
-    , _enabled(false)
-  {
-  }
-  void setup(uint8_t pinIn, unsigned long debDelay)
-  {
-    if(pinIn > 0) {
-      _pinIn = pinIn;
-      _debDelay = debDelay;
-      pinMode(_pinIn, INPUT);
-      _enabled = true;
-    }
-    else {
-      _enabled = false;
-    }
-  }
-  unsigned long process(unsigned long now)   // return pressed time if on
-  {
-    if(!_enabled) {
-      return 0;
-    }
-    if(now - _timeStamp > _debDelay) {
-      int value = digitalRead(_pinIn); // LOW when button pressed (on)
-      if(_stateOn != !value) {
-        _stateOn = !value;
-        _timeStamp = now;
-        if(_stateOn) {
-          _stateOnCount++;
-        }
-        return _stateOn ? 1 : 0;
-      }
-    }
-    return _stateOn ? now - _timeStamp : 0;
-  }
-  unsigned long getStateOnCount()
-  {
-    return _stateOnCount;
-  }
+  InputDebounce();
+  void setup(uint8_t pinIn, unsigned long debDelay);
+  unsigned long process(unsigned long now);
+  unsigned long getStateOnCount();
 private:
   uint8_t _pinIn;
   bool _stateOn;
