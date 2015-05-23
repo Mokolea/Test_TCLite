@@ -17,7 +17,7 @@ Current TCLite: *Version 1.2.0 2015-04-07*
 
 ## Hardware setup
 **TODO...**
-Schematic (Eagle), pic, ...
+Schematic (Eagle), PCB (Fritzing), pic, ...
 
 ## Parts list
  - [Arduino Due](http://www.arduino.cc/en/Main/ArduinoBoardDue) board,
