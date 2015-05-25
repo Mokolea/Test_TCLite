@@ -77,7 +77,8 @@ Adafruit_HX8357 tft = Adafruit_HX8357(TFT_CS, TFT_DC, TFT_RST); // Arduino Uno: 
 
 #define BUTTON_PIN_SEND_DATA_ACK       22
 #define BUTTON_PIN_SEND_DATA_NOT_ACK   23
-#define BUTTON_DEBOUNCE_DELAY         100   /* [ms] */
+#define BUTTON_DEBOUNCE_DELAY          20   /* [ms] */
+// test #define BUTTON_DEBOUNCE_DELAY         300   /* [ms] */
 
 #define TCL_DATA_ACK_SEND_BACK   1   /* 1: enable, 0: disable */
 #define TCL_DATA_ACK_SEND_CASE   4   /* send-data-ack test-case: 1..5 */
@@ -165,15 +166,16 @@ class InputDebounce
 public:
   InputDebounce();
   void setup(uint8_t pinIn, unsigned long debDelay);
-  unsigned long process(unsigned long now);
+  unsigned long process(unsigned long now); // return pressed time if on (> debounce delay)
   unsigned long getStateOnCount();
 private:
   uint8_t _pinIn;
-  bool _stateOn;
-  unsigned long _timeStamp; // last state change
   unsigned long _debDelay;
-  unsigned long _stateOnCount;
   bool _enabled;
+  bool _valueLast; // last input value
+  bool _stateOn; // current on state (debounced)
+  unsigned long _timeStamp; // last input value (state) change, start debounce time
+  unsigned long _stateOnCount;
 };
 
 static ActivityLED activityLED;

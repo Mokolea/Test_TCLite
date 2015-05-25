@@ -7,11 +7,12 @@
 
 InputDebounce::InputDebounce()
   : _pinIn(0)
+  , _debDelay(0)
+  , _enabled(false)
+  , _valueLast(false)
   , _stateOn(false)
   , _timeStamp(0)
-  , _debDelay(0)
   , _stateOnCount(0)
-  , _enabled(false)
 {
 }
 
@@ -28,20 +29,27 @@ void InputDebounce::setup(uint8_t pinIn, unsigned long debDelay)
   }
 }
 
-unsigned long InputDebounce::process(unsigned long now)   // return pressed time if on
+unsigned long InputDebounce::process(unsigned long now)
 {
   if(!_enabled) {
     return 0;
   }
+  int value = digitalRead(_pinIn); // LOW (with pull-up res) when button pressed (on)
+  // adjust value pressed (on)
+  value = !value;
+  // check if input value changed
+  if(_valueLast != value) {
+    _valueLast = value;
+    _timeStamp = now;
+  }
+  // wait debouncing time
   if(now - _timeStamp > _debDelay) {
-    int value = digitalRead(_pinIn); // LOW when button pressed (on)
-    if(_stateOn != !value) {
-      _stateOn = !value;
-      _timeStamp = now;
+    // input value (state) has been stable longer than the debounce period
+    if(_stateOn != _valueLast) {
+      _stateOn = _valueLast;
       if(_stateOn) {
         _stateOnCount++;
       }
-      return _stateOn ? 1 : 0;
     }
   }
   return _stateOn ? now - _timeStamp : 0;
