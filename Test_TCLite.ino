@@ -12,6 +12,7 @@
 
 #include <Wire.h>
 #include "LiquidCrystal_I2C.h"
+#include "InputDebounce.h"
 
 /* TFT: see also port_TCL_Logger */
 #define TCL_LOG_TFT_ADA_ILI9340   0   /* TFT 2.2"; 1: enable, 0: disable */
@@ -159,23 +160,6 @@ private:
   bool _on;
   bool _doShow;
   bool _enabled;
-};
-
-class InputDebounce
-{
-public:
-  InputDebounce();
-  void setup(uint8_t pinIn, unsigned long debDelay);
-  unsigned long process(unsigned long now); // return pressed time if on (> debounce delay)
-  unsigned long getStateOnCount();
-private:
-  uint8_t _pinIn;
-  unsigned long _debDelay;
-  bool _enabled;
-  bool _valueLast; // last input value
-  bool _stateOn; // current on state (debounced)
-  unsigned long _timeStamp; // last input value (state) change, start debounce time
-  unsigned long _stateOnCount;
 };
 
 static ActivityLED activityLED;
@@ -326,4 +310,3 @@ void loop()
   indicationLCD_send.process(now);
   indicationLCD_recv.process(now);
 }
-
