@@ -78,8 +78,7 @@ Adafruit_HX8357 tft = Adafruit_HX8357(TFT_CS, TFT_DC, TFT_RST); // Arduino Uno: 
 
 #define BUTTON_PIN_SEND_DATA_ACK       22
 #define BUTTON_PIN_SEND_DATA_NOT_ACK   23
-#define BUTTON_DEBOUNCE_DELAY          20   /* [ms] */
-// test #define BUTTON_DEBOUNCE_DELAY         300   /* [ms] */
+#define BUTTON_DEBOUNCE_DELAY          20   // [ms], do tests with e.g. 300
 
 #define TCL_DATA_ACK_SEND_BACK   1   /* 1: enable, 0: disable */
 #define TCL_DATA_ACK_SEND_CASE   4   /* send-data-ack test-case: 1..5 */
@@ -93,8 +92,8 @@ static TCL_UInt32 s_processingInterval; /* [ms] */
 static TCL_Bool s_connected = TCL_FALSE;
 static TCL_TerminalRegistrationStateType s_registrationState = TCL_TERMINAL_REGISTRATION_STATE_NOT_REGISTERED;
 
-static TCL_Bool s_busy_1 = TCL_FALSE;   /* data-ack */
-static TCL_Bool s_busy_2 = TCL_FALSE;   /* data-not-ack */
+static TCL_Bool s_busy_1 = TCL_FALSE;   /* data-acknowledged */
+static TCL_Bool s_busy_2 = TCL_FALSE;   /* data-not-acknowledged */
 static TCL_Bool s_busy = TCL_FALSE;
 
 static TCL_ReqSendDataAck s_reqSendDataAck;
@@ -275,7 +274,7 @@ void loop()
   
   unsigned long now = millis();
   
-  // buttons
+  // buttons: poll button state, return on-time [ms] if pressed (debounced)
   unsigned int buttonOnTime_SendDataAck = buttonSendDataAck.process(now);
   unsigned int buttonOnTime_SendDataNotAck = buttonSendDataNotAck.process(now);
   
@@ -283,22 +282,24 @@ void loop()
     unsigned int count = buttonSendDataAck.getStateOnCount();
     if(buttonStateOnCount_SendDataAck != count) {
       buttonStateOnCount_SendDataAck = count;
+      // test service: send-data-acknowledged
       s_send_1 = TCL_TRUE;
       TCL_LogInfo("Button TCL_ReqSendDataAck pressed");
     }
     else {
-      TCL_LogInfo("Button TCL_ReqSendDataAck still pressed"); // change this; log count, time
+      //TCL_LogInfo("Button TCL_ReqSendDataAck still pressed"); // change this; log count, time
     }
   }
   if(buttonOnTime_SendDataNotAck) {
     unsigned int count = buttonSendDataNotAck.getStateOnCount();
     if(buttonStateOnCount_SendDataNotAck != count) {
       buttonStateOnCount_SendDataNotAck = count;
+      // test service: send-data-not-acknowledged
       s_send_2 = TCL_TRUE;
       TCL_LogInfo("Button TCL_ReqSendDataNotAck pressed");
     }
     else {
-      TCL_LogInfo("Button TCL_ReqSendDataNotAck still pressed"); // change this; log count, time
+      //TCL_LogInfo("Button TCL_ReqSendDataNotAck still pressed"); // change this; log count, time
     }
   }
   
