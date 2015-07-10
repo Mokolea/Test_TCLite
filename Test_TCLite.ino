@@ -117,6 +117,10 @@ public:
   void setup(unsigned char pin, unsigned long interval);
   void process(unsigned long now);
 private:
+  // implicitly implemented, not to be used
+  ActivityLED(const ActivityLED&);
+  ActivityLED& operator=(const ActivityLED&);
+  //
   unsigned char _pin;
   unsigned long _interval;
   unsigned long _timeStamp;
@@ -131,6 +135,10 @@ public:
   void setup(LiquidCrystal_I2C* lcd, unsigned char col, unsigned char row, unsigned long interval);
   void process(unsigned long now);
 private:
+  // implicitly implemented, not to be used
+  ActivityLCD(const ActivityLCD&);
+  ActivityLCD& operator=(const ActivityLCD&);
+  //
   LiquidCrystal_I2C* _lcd;
   unsigned char _col;
   unsigned char _row;
@@ -150,6 +158,10 @@ public:
   void hide();
   void process(unsigned long now);
 private:
+  // implicitly implemented, not to be used
+  IndicationLCD(const IndicationLCD&);
+  IndicationLCD& operator=(const IndicationLCD&);
+  //
   LiquidCrystal_I2C* _lcd;
   unsigned char _col;
   unsigned char _row;
