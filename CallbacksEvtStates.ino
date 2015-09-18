@@ -3,6 +3,8 @@
 
   Mario Ban, 01.2015
 
+  GNU General Public License v2.0
+  Copyright (C) 2015 Mario Ban
 */
 
 static void TCL_EvtTerminalStateCallback(const TCL_EvtTerminalState* event, TCL_Error* error)

@@ -3,6 +3,8 @@
 
   Mario Ban, 01.2015
 
+  GNU General Public License v2.0
+  Copyright (C) 2015 Mario Ban
 */
 
 static void updateLCD_TerminalState(TCL_Bool connected, const TCL_Char* RFSI)

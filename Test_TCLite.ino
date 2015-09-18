@@ -8,6 +8,8 @@
     - use tft diaplay for log (with colors) ok
     - register for all data callbacks, display data (hex/text: first 20 chars)
 
+  GNU General Public License v2.0
+  Copyright (C) 2015 Mario Ban
 */
 
 #include <Wire.h>

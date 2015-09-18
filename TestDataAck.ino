@@ -3,6 +3,8 @@
 
   Mario Ban, 01.2015
 
+  GNU General Public License v2.0
+  Copyright (C) 2015 Mario Ban
 */
 
 static void TCL_RspDataAckSentCallback(const TCL_RspDataAckSent* response, TCL_Error* error)

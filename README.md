@@ -34,4 +34,6 @@ Schematic (Eagle), PCB (Fritzing), pic, ...
  - TETRAPOL data simulator, serial null-modem cable
  - TETRAPOL radio terminal TPH 700, serial data adapter cable
 
+*GNU General Public License v2.0*
+
 -- Mario
