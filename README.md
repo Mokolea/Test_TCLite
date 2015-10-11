@@ -11,9 +11,10 @@ Current TCLite: *Version 1.2.0 2015-04-07*
 
 ## Dependencies (libraries)
  - TCLite, (c) Atos AG Switzerland
- - LiquidCrystal_I2C
- - Adafruit_GFX
- - Adafruit_HX8357
+ - Arduino IDE Library Manager:
+   - LiquidCrystal_I2C
+   - Adafruit GFX Library
+   - Adafruit HX8357 Library
 
 ## Hardware setup
 **TODO...**
