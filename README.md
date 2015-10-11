@@ -15,6 +15,7 @@ Current TCLite: *Version 1.2.0 2015-04-07*
    - LiquidCrystal_I2C
    - Adafruit GFX Library
    - Adafruit HX8357 Library
+   - InputDebounce
 
 ## Hardware setup
 **TODO...**
