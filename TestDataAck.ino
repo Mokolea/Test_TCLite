@@ -33,7 +33,7 @@ static void TCL_RspDataAckSentCallback(const TCL_RspDataAckSent* response, TCL_E
   
   // LCD
   //updateLCD_DataIndication(TCL_FALSE, TCL_TRUE);
-  indicationLCD_send.hide();
+  s_indicationLCD_send.hide();
   
   TCL_ErrorSetErrorCode(error, TCL_ERROR_NONE);
 }
@@ -60,7 +60,7 @@ static void TCL_EvtDataAckReceivedCallback(const TCL_EvtDataAckReceived* event, 
   
   // LCD
   //updateLCD_DataIndication(TCL_TRUE, TCL_FALSE);
-  indicationLCD_recv.show(millis());
+  s_indicationLCD_recv.show(millis());
   
   TCL_DataConstruct(&dataCompression, dataCompressionBuffer, sizeof(dataCompressionBuffer), error);
   if(TCL_TRUE == TCL_ErrorIsError(error)) {
@@ -168,7 +168,7 @@ static void Send_ReqSendDataAck(TCL_Error* error)
   
   // LCD
   //updateLCD_DataIndication(TCL_TRUE, TCL_TRUE);
-  indicationLCD_send.show();
+  s_indicationLCD_send.show();
   
   compression = TCL_COMPRESSION_OFF;
   

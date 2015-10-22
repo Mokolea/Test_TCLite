@@ -175,12 +175,12 @@ private:
   bool _enabled;
 };
 
-static ActivityLED activityLED;
-static ActivityLCD activityLCD;
-static IndicationLCD indicationLCD_send;
-static IndicationLCD indicationLCD_recv;
-static InputDebounce buttonSendDataAck;
-static InputDebounce buttonSendDataNotAck;
+static ActivityLED s_activityLED;
+static ActivityLCD s_activityLCD;
+static IndicationLCD s_indicationLCD_send;
+static IndicationLCD s_indicationLCD_recv;
+static InputDebounce s_buttonSendDataAck;
+static InputDebounce s_buttonSendDataNotAck;
 
 void setup()
 {
@@ -253,16 +253,16 @@ void setup()
   TCL_LogInfo("--- test TCL_Logger");
   
   // activity LED
-  activityLED.setup(LED_BUILTIN, 500); // 500ms on, 500ms off
+  s_activityLED.setup(LED_BUILTIN, 500); // 500ms on, 500ms off
   
   // activity LCD
-  activityLCD.setup(&s_lcd, LCD_ACTIVITY_COL, LCD_ACTIVITY_ROW, 1000); // 1s interval (cycle through 4 chars)
-  indicationLCD_send.setup(&s_lcd, LCD_TCLITE_SEND_COL, LCD_TCLITE_SEND_ROW, (char)0x7e /* right arrow */, 300 * 1000); // 5min delay (not used)
-  indicationLCD_recv.setup(&s_lcd, LCD_TCLITE_RECV_COL, LCD_TCLITE_RECV_ROW, (char)0x7f /* left arrow */, 300); // 300ms delay
+  s_activityLCD.setup(&s_lcd, LCD_ACTIVITY_COL, LCD_ACTIVITY_ROW, 1000); // 1s interval (cycle through 4 chars)
+  s_indicationLCD_send.setup(&s_lcd, LCD_TCLITE_SEND_COL, LCD_TCLITE_SEND_ROW, (char)0x7e /* right arrow */, 300 * 1000); // 5min delay (not used)
+  s_indicationLCD_recv.setup(&s_lcd, LCD_TCLITE_RECV_COL, LCD_TCLITE_RECV_ROW, (char)0x7f /* left arrow */, 300); // 300ms delay
   
   // buttons
-  buttonSendDataAck.setup(BUTTON_PIN_SEND_DATA_ACK, BUTTON_DEBOUNCE_DELAY);
-  buttonSendDataNotAck.setup(BUTTON_PIN_SEND_DATA_NOT_ACK, BUTTON_DEBOUNCE_DELAY);
+  s_buttonSendDataAck.setup(BUTTON_PIN_SEND_DATA_ACK, BUTTON_DEBOUNCE_DELAY);
+  s_buttonSendDataNotAck.setup(BUTTON_PIN_SEND_DATA_NOT_ACK, BUTTON_DEBOUNCE_DELAY);
   
   /* TCLite */
   setup_TCLite();
@@ -289,11 +289,11 @@ void loop()
   unsigned long now = millis();
   
   // buttons: poll button state, return on-time [ms] if pressed (debounced)
-  unsigned int buttonOnTime_SendDataAck = buttonSendDataAck.process(now);
-  unsigned int buttonOnTime_SendDataNotAck = buttonSendDataNotAck.process(now);
+  unsigned int buttonOnTime_SendDataAck = s_buttonSendDataAck.process(now);
+  unsigned int buttonOnTime_SendDataNotAck = s_buttonSendDataNotAck.process(now);
   
   if(buttonOnTime_SendDataAck) {
-    unsigned int count = buttonSendDataAck.getStateOnCount();
+    unsigned int count = s_buttonSendDataAck.getStateOnCount();
     if(buttonStateOnCount_SendDataAck != count) {
       buttonStateOnCount_SendDataAck = count;
       // test service: send-data-acknowledged
@@ -305,7 +305,7 @@ void loop()
     }
   }
   if(buttonOnTime_SendDataNotAck) {
-    unsigned int count = buttonSendDataNotAck.getStateOnCount();
+    unsigned int count = s_buttonSendDataNotAck.getStateOnCount();
     if(buttonStateOnCount_SendDataNotAck != count) {
       buttonStateOnCount_SendDataNotAck = count;
       // test service: send-data-not-acknowledged
@@ -318,10 +318,10 @@ void loop()
   }
   
   // activity LED
-  activityLED.process(now);
+  s_activityLED.process(now);
   
   // activity LCD
-  activityLCD.process(now);
-  indicationLCD_send.process(now);
-  indicationLCD_recv.process(now);
+  s_activityLCD.process(now);
+  s_indicationLCD_send.process(now);
+  s_indicationLCD_recv.process(now);
 }
