@@ -16,6 +16,8 @@ void handleButtons(unsigned long now)
   unsigned int buttonOnTime_SendDataAck = s_buttonSendDataAck.process(now);
   unsigned int buttonOnTime_SendDataNotAck = s_buttonSendDataNotAck.process(now);
   
+  // TODO change this to using callbacks
+  
   if(buttonOnTime_SendDataAck) {
     unsigned int count = s_buttonSendDataAck.getStateOnCount();
     if(buttonStateOnCount_SendDataAck != count) {
