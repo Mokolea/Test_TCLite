@@ -10,15 +10,15 @@
 static void updateLCD_TerminalState(TCL_Bool connected, const TCL_Char* RFSI)
 {
   // LCD
-  lcd.setCursor(LCD_TERMINAL_STATE_COL, LCD_TERMINAL_STATE_ROW);
-  lcd.print("                    "); /* 20 spaces */
-  lcd.setCursor(LCD_TERMINAL_STATE_COL, LCD_TERMINAL_STATE_ROW);
+  s_lcd.setCursor(LCD_TERMINAL_STATE_COL, LCD_TERMINAL_STATE_ROW);
+  s_lcd.print("                    "); /* 20 spaces */
+  s_lcd.setCursor(LCD_TERMINAL_STATE_COL, LCD_TERMINAL_STATE_ROW);
   
   if(!connected) {
-    lcd.print("not connected");
+    s_lcd.print("not connected");
   }
   else {
-    lcd.print(RFSI);
+    s_lcd.print(RFSI);
   }
 }
 
@@ -26,37 +26,37 @@ static void updateLCD_RegistrationState(TCL_TerminalRegistrationStateType regist
                                         TCL_UInt16 rBaseNetwork, TCL_UInt8 rswIdentifier, TCL_UInt8 bsIdentifier, TCL_SystemOperatingModeType systemMode)
 {
   // LCD
-  lcd.setCursor(LCD_REGISTRATION_STATE_COL, LCD_REGISTRATION_STATE_ROW);
-  lcd.print("                    "); /* 20 spaces */
-  lcd.setCursor(LCD_REGISTRATION_STATE_COL, LCD_REGISTRATION_STATE_ROW);
+  s_lcd.setCursor(LCD_REGISTRATION_STATE_COL, LCD_REGISTRATION_STATE_ROW);
+  s_lcd.print("                    "); /* 20 spaces */
+  s_lcd.setCursor(LCD_REGISTRATION_STATE_COL, LCD_REGISTRATION_STATE_ROW);
   
   if(registrationState != TCL_TERMINAL_REGISTRATION_STATE_REGISTERED) {
-    lcd.print("not registered");
+    s_lcd.print("not registered");
   }
   else {
-    lcd.print(rBaseNetwork, DEC);
-    lcd.print(" ");
-    lcd.print(rswIdentifier, DEC);
-    lcd.print(" ");
-    lcd.print(bsIdentifier, DEC);
-    lcd.print(" ");
+    s_lcd.print(rBaseNetwork, DEC);
+    s_lcd.print(" ");
+    s_lcd.print(rswIdentifier, DEC);
+    s_lcd.print(" ");
+    s_lcd.print(bsIdentifier, DEC);
+    s_lcd.print(" ");
     if(systemMode == TCL_SYSTEM_MODE_NORMAL) {
-      lcd.print("normal");
+      s_lcd.print("normal");
     }
     else if(systemMode == TCL_SYSTEM_MODE_BN_DISCONNECTED_FBM1) {
-      lcd.print("FBM 1");
+      s_lcd.print("FBM 1");
     }
     else if(systemMode == TCL_SYSTEM_MODE_MSW_DISCONNECTED_FBM2) {
-      lcd.print("FBM 2");
+      s_lcd.print("FBM 2");
     }
     else if(systemMode == TCL_SYSTEM_MODE_RSW_DISCONNECTED_FBM31) {
-      lcd.print("FBM 3.1");
+      s_lcd.print("FBM 3.1");
     }
     else if(systemMode == TCL_SYSTEM_MODE_BSC_DISCONNECTED_FBM32) {
-      lcd.print("FBM 3.2");
+      s_lcd.print("FBM 3.2");
     }
     else {
-      lcd.print("unknown");
+      s_lcd.print("unknown");
     }
   }
 }
@@ -66,13 +66,13 @@ static void updateLCD_Busy()
   TCL_Bool busy = s_busy_1 || s_busy_2;
   
   // LCD
-  lcd.setCursor(LCD_TCLITE_BUSY_COL, LCD_TCLITE_BUSY_ROW);
+  s_lcd.setCursor(LCD_TCLITE_BUSY_COL, LCD_TCLITE_BUSY_ROW);
   
   if(busy && !s_busy) {
-    lcd.print("B");
+    s_lcd.print("B");
   }
   else if(!busy && s_busy) {
-    lcd.print(" ");
+    s_lcd.print(" ");
   }
   s_busy = busy;
 }
@@ -84,27 +84,27 @@ static void updateLCD_DataIndication(TCL_Bool indStart, TCL_Bool dirSend)
   
   // LCD
   if(dirSend) {
-    lcd.setCursor(LCD_TCLITE_SEND_COL, LCD_TCLITE_SEND_ROW);
+    s_lcd.setCursor(LCD_TCLITE_SEND_COL, LCD_TCLITE_SEND_ROW);
     if(indStart) {
       c = (char)0x7e; /* right arrow */
     }
   }
   else {
-    lcd.setCursor(LCD_TCLITE_RECV_COL, LCD_TCLITE_RECV_ROW);
+    s_lcd.setCursor(LCD_TCLITE_RECV_COL, LCD_TCLITE_RECV_ROW);
     if(indStart) {
       c = (char)0x7f; /* left arrow */
     }
   }
-  lcd.print(c);
+  s_lcd.print(c);
 }
 #endif
 
 static void updateLCD_Data(const TCL_Data* data)
 {
   // LCD
-  lcd.setCursor(LCD_TCLITE_DATA_RECV_COL, LCD_TCLITE_DATA_RECV_ROW);
-  lcd.print("                    "); /* 20 spaces */
-  lcd.setCursor(LCD_TCLITE_DATA_RECV_COL, LCD_TCLITE_DATA_RECV_ROW);
+  s_lcd.setCursor(LCD_TCLITE_DATA_RECV_COL, LCD_TCLITE_DATA_RECV_ROW);
+  s_lcd.print("                    "); /* 20 spaces */
+  s_lcd.setCursor(LCD_TCLITE_DATA_RECV_COL, LCD_TCLITE_DATA_RECV_ROW);
   
   TCL_UInt8* dataPointer = TCL_DataGetDataPointer(data);
   
@@ -112,17 +112,17 @@ static void updateLCD_Data(const TCL_Data* data)
   for(TCL_UInt32 i = 0; i < TCL_DataGetSize(data) && i < 4; i++) {
     char hex[6];
     sprintf(hex, "0x%02x ", dataPointer[i]);
-    lcd.print(hex);
+    s_lcd.print(hex);
   }
 #endif
   
   // print max first 20 data bytes
   for(TCL_UInt32 i = 0; i < TCL_DataGetSize(data) && i < 20; i++) {
     if(dataPointer[i] >= 0x20 && dataPointer[i] <= 0x7e) {
-      lcd.print((TCL_Char)dataPointer[i]); /* printable */
+      s_lcd.print((TCL_Char)dataPointer[i]); /* printable */
     }
     else {
-      lcd.print("."); /* substitute non-printable */
+      s_lcd.print("."); /* substitute non-printable */
     }
   }
 }

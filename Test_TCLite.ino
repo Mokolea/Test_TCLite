@@ -46,18 +46,18 @@
 
 #include "TCLite.h"
 
-static LiquidCrystal_I2C lcd(0x27, 20, 4); // set the LCD address to 0x27 for a 20 chars and 4 line display
+static LiquidCrystal_I2C s_lcd(0x27, 20, 4); // set the LCD address to 0x27 for a 20 chars and 4 line display
 
 #if TCL_LOG_TFT_ADA_ILI9340 > 0
 // Using software SPI is really not suggested, its incredibly slow
-//Adafruit_ILI9340 tft = Adafruit_ILI9340(_cs, _dc, _mosi, _sclk, _rst, _miso);
+//Adafruit_ILI9340 s_tft = Adafruit_ILI9340(_cs, _dc, _mosi, _sclk, _rst, _miso);
 // Use hardware SPI
-Adafruit_ILI9340 tft = Adafruit_ILI9340(_cs, _dc, _rst); // Arduino Uno: MOSI 11, SCLK 13
+Adafruit_ILI9340 s_tft = Adafruit_ILI9340(_cs, _dc, _rst); // Arduino Uno: MOSI 11, SCLK 13
 #endif
 
 #if TCL_LOG_TFT_ADA_HX8357 > 0
 // Use hardware SPI
-Adafruit_HX8357 tft = Adafruit_HX8357(TFT_CS, TFT_DC, TFT_RST); // Arduino Uno: #13, #12, #11 and the above for CS/DC
+Adafruit_HX8357 s_tft = Adafruit_HX8357(TFT_CS, TFT_DC, TFT_RST); // Arduino Uno: #13, #12, #11 and the above for CS/DC
 #endif
 
 #define APPLICATION_ID         100
@@ -200,11 +200,11 @@ void setup()
   Serial2.println("Serial2: Initialized 115200");
   
   // LCD
-  lcd.init(); // initialize the lcd
-  lcd.backlight();
-  lcd.print(F("Test TCLite"));
-  lcd.setCursor(0, 1);
-  lcd.print("v" TCL_VERSION " (" TCL_BUILD ")");
+  s_lcd.init(); // initialize the lcd
+  s_lcd.backlight();
+  s_lcd.print(F("Test TCLite"));
+  s_lcd.setCursor(0, 1);
+  s_lcd.print("v" TCL_VERSION " (" TCL_BUILD ")");
   
   updateLCD_TerminalState(TCL_FALSE, "");
   updateLCD_RegistrationState(TCL_TERMINAL_REGISTRATION_STATE_NOT_REGISTERED, 0, 0, 0, TCL_SYSTEM_MODE_NORMAL);
@@ -215,32 +215,32 @@ void setup()
   
   // TFT Adafruit ILI9340
 #if TCL_LOG_TFT_ADA_ILI9340 > 0
-  tft.begin();
-  tft.setRotation(1);
-  tft.fillScreen(ILI9340_BLACK);
-  tft.setCursor(0, 0);
-  tft.setTextColor(ILI9340_GREEN);
-  tft.setTextSize(2);
-  tft.println(F("Test TCLite"));
-  tft.println("v" TCL_VERSION " (" TCL_BUILD ")");
-  tft.println("-------------------------");
-  tft.setTextColor(ILI9340_WHITE);
-  tft.setTextSize(1);
+  s_tft.begin();
+  s_tft.setRotation(1);
+  s_tft.fillScreen(ILI9340_BLACK);
+  s_tft.setCursor(0, 0);
+  s_tft.setTextColor(ILI9340_GREEN);
+  s_tft.setTextSize(2);
+  s_tft.println(F("Test TCLite"));
+  s_tft.println("v" TCL_VERSION " (" TCL_BUILD ")");
+  s_tft.println("-------------------------");
+  s_tft.setTextColor(ILI9340_WHITE);
+  s_tft.setTextSize(1);
 #endif
   
   // TFT Adafruit HX8357
 #if TCL_LOG_TFT_ADA_HX8357 > 0
-  tft.begin(HX8357D);
-  tft.setRotation(1);
-  tft.fillScreen(HX8357_BLACK);
-  tft.setCursor(0, 0);
-  tft.setTextColor(HX8357_GREEN);
-  tft.setTextSize(2);
-  tft.println(F("Test TCLite"));
-  tft.println("v" TCL_VERSION " (" TCL_BUILD ")");
-  tft.println("-------------------------");
-  tft.setTextColor(HX8357_WHITE);
-  tft.setTextSize(1);
+  s_tft.begin(HX8357D);
+  s_tft.setRotation(1);
+  s_tft.fillScreen(HX8357_BLACK);
+  s_tft.setCursor(0, 0);
+  s_tft.setTextColor(HX8357_GREEN);
+  s_tft.setTextSize(2);
+  s_tft.println(F("Test TCLite"));
+  s_tft.println("v" TCL_VERSION " (" TCL_BUILD ")");
+  s_tft.println("-------------------------");
+  s_tft.setTextColor(HX8357_WHITE);
+  s_tft.setTextSize(1);
 #endif
   
   TCL_LogInfo("+++ test TCL_Logger");
@@ -256,9 +256,9 @@ void setup()
   activityLED.setup(LED_BUILTIN, 500); // 500ms on, 500ms off
   
   // activity LCD
-  activityLCD.setup(&lcd, LCD_ACTIVITY_COL, LCD_ACTIVITY_ROW, 1000); // 1s interval (cycle through 4 chars)
-  indicationLCD_send.setup(&lcd, LCD_TCLITE_SEND_COL, LCD_TCLITE_SEND_ROW, (char)0x7e /* right arrow */, 300 * 1000); // 5min delay (not used)
-  indicationLCD_recv.setup(&lcd, LCD_TCLITE_RECV_COL, LCD_TCLITE_RECV_ROW, (char)0x7f /* left arrow */, 300); // 300ms delay
+  activityLCD.setup(&s_lcd, LCD_ACTIVITY_COL, LCD_ACTIVITY_ROW, 1000); // 1s interval (cycle through 4 chars)
+  indicationLCD_send.setup(&s_lcd, LCD_TCLITE_SEND_COL, LCD_TCLITE_SEND_ROW, (char)0x7e /* right arrow */, 300 * 1000); // 5min delay (not used)
+  indicationLCD_recv.setup(&s_lcd, LCD_TCLITE_RECV_COL, LCD_TCLITE_RECV_ROW, (char)0x7f /* left arrow */, 300); // 300ms delay
   
   // buttons
   buttonSendDataAck.setup(BUTTON_PIN_SEND_DATA_ACK, BUTTON_DEBOUNCE_DELAY);
