@@ -272,9 +272,6 @@ void loop()
 {
   // put your main code here, to run repeatedly:
   
-  static unsigned int buttonStateOnCount_SendDataAck = 0;
-  static unsigned int buttonStateOnCount_SendDataNotAck = 0;
-  
   /* TCLite */
   loop_TCLite();
   
@@ -288,34 +285,7 @@ void loop()
   
   unsigned long now = millis();
   
-  // buttons: poll button state, return on-time [ms] if pressed (debounced)
-  unsigned int buttonOnTime_SendDataAck = s_buttonSendDataAck.process(now);
-  unsigned int buttonOnTime_SendDataNotAck = s_buttonSendDataNotAck.process(now);
-  
-  if(buttonOnTime_SendDataAck) {
-    unsigned int count = s_buttonSendDataAck.getStateOnCount();
-    if(buttonStateOnCount_SendDataAck != count) {
-      buttonStateOnCount_SendDataAck = count;
-      // test service: send-data-acknowledged
-      s_send_1 = TCL_TRUE;
-      TCL_LogInfo("Button TCL_ReqSendDataAck pressed");
-    }
-    else {
-      //TCL_LogInfo("Button TCL_ReqSendDataAck still pressed"); // change this; log count, time
-    }
-  }
-  if(buttonOnTime_SendDataNotAck) {
-    unsigned int count = s_buttonSendDataNotAck.getStateOnCount();
-    if(buttonStateOnCount_SendDataNotAck != count) {
-      buttonStateOnCount_SendDataNotAck = count;
-      // test service: send-data-not-acknowledged
-      s_send_2 = TCL_TRUE;
-      TCL_LogInfo("Button TCL_ReqSendDataNotAck pressed");
-    }
-    else {
-      //TCL_LogInfo("Button TCL_ReqSendDataNotAck still pressed"); // change this; log count, time
-    }
-  }
+  handleButtons(now);
   
   // activity LED
   s_activityLED.process(now);
