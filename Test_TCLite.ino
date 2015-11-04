@@ -257,7 +257,7 @@ void setup()
   
   // activity LCD
   s_activityLCD.setup(&s_lcd, LCD_ACTIVITY_COL, LCD_ACTIVITY_ROW, 1000); // 1s interval (cycle through 4 chars)
-  s_indicationLCD_send.setup(&s_lcd, LCD_TCLITE_SEND_COL, LCD_TCLITE_SEND_ROW, (char)0x7e /* right arrow */, 300 * 1000); // 5min delay (not used)
+  s_indicationLCD_send.setup(&s_lcd, LCD_TCLITE_SEND_COL, LCD_TCLITE_SEND_ROW, (char)0x7e /* right arrow */, 60 * 1000U); // 1min delay (not used)
   s_indicationLCD_recv.setup(&s_lcd, LCD_TCLITE_RECV_COL, LCD_TCLITE_RECV_ROW, (char)0x7f /* left arrow */, 300); // 300ms delay
   
   // buttons
