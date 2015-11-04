@@ -7,7 +7,7 @@
   Copyright (C) 2015 Mario Ban
 */
 
-static void setup_TCLite()
+void setup_TCLite()
 {
   /* TCLite */
   

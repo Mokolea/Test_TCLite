@@ -7,7 +7,7 @@
   Copyright (C) 2015 Mario Ban
 */
 
-static void TCL_EvtTerminalStateCallback(const TCL_EvtTerminalState* event, TCL_Error* error)
+void TCL_EvtTerminalStateCallback(const TCL_EvtTerminalState* event, TCL_Error* error)
 {
   TCL_EventNumber eventNumber;
   TCL_Bool connected;
@@ -61,7 +61,7 @@ static void TCL_EvtTerminalStateCallback(const TCL_EvtTerminalState* event, TCL_
   updateLCD_TerminalState(connected, TCL_StringGetString(&rfsi));
 }
 
-static void TCL_EvtRegistrationStateCallback(const TCL_EvtRegistrationState* event, TCL_Error* error)
+void TCL_EvtRegistrationStateCallback(const TCL_EvtRegistrationState* event, TCL_Error* error)
 {
   TCL_EventNumber eventNumber;
   TCL_TerminalRegistrationStateType registrationState;

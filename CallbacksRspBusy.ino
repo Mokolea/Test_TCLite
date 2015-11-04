@@ -7,7 +7,7 @@
   Copyright (C) 2015 Mario Ban
 */
 
-static void TCL_ReqSendDataAckBusyCallback(TCL_Bool busy, TCL_Error* error)
+void TCL_ReqSendDataAckBusyCallback(TCL_Bool busy, TCL_Error* error)
 {
   TCL_Char buffer[100];
   
@@ -25,7 +25,7 @@ static void TCL_ReqSendDataAckBusyCallback(TCL_Bool busy, TCL_Error* error)
   TCL_ErrorSetErrorCode(error, TCL_ERROR_NONE);
 }
 
-static void TCL_ReqSendDataNotAckBusyCallback(TCL_Bool busy, TCL_Error* error)
+void TCL_ReqSendDataNotAckBusyCallback(TCL_Bool busy, TCL_Error* error)
 {
   TCL_Char buffer[100];
   

@@ -7,7 +7,7 @@
   Copyright (C) 2015 Mario Ban
 */
 
-static void TCL_RspDataAckSentCallback(const TCL_RspDataAckSent* response, TCL_Error* error)
+void TCL_RspDataAckSentCallback(const TCL_RspDataAckSent* response, TCL_Error* error)
 {
   TCL_RequestId requestId;
   const TCL_Result* result;
@@ -38,7 +38,7 @@ static void TCL_RspDataAckSentCallback(const TCL_RspDataAckSent* response, TCL_E
   TCL_ErrorSetErrorCode(error, TCL_ERROR_NONE);
 }
 
-static void TCL_EvtDataAckReceivedCallback(const TCL_EvtDataAckReceived* event, TCL_Error* error)
+void TCL_EvtDataAckReceivedCallback(const TCL_EvtDataAckReceived* event, TCL_Error* error)
 {
   TCL_EventNumber eventNumber;
   TCL_SourceAddress sourceAddress;
@@ -145,7 +145,7 @@ static void TCL_EvtDataAckReceivedCallback(const TCL_EvtDataAckReceived* event, 
   //updateLCD_DataIndication(TCL_FALSE, TCL_FALSE);
 }
 
-static void Send_ReqSendDataAck(TCL_Error* error)
+void Send_ReqSendDataAck(TCL_Error* error)
 {
   TCL_Data  data;
   //TCL_UInt8 dataBuffer[1500]; /* TCL_REQ_SEND_DATA_ACK_DATA_SIZE_MAX */

@@ -7,7 +7,7 @@
   Copyright (C) 2015 Mario Ban
 */
 
-static void updateLCD_TerminalState(TCL_Bool connected, const TCL_Char* RFSI)
+void updateLCD_TerminalState(TCL_Bool connected, const TCL_Char* RFSI)
 {
   // LCD
   s_lcd.setCursor(LCD_TERMINAL_STATE_COL, LCD_TERMINAL_STATE_ROW);
@@ -22,7 +22,7 @@ static void updateLCD_TerminalState(TCL_Bool connected, const TCL_Char* RFSI)
   }
 }
 
-static void updateLCD_RegistrationState(TCL_TerminalRegistrationStateType registrationState,
+void updateLCD_RegistrationState(TCL_TerminalRegistrationStateType registrationState,
                                         TCL_UInt16 rBaseNetwork, TCL_UInt8 rswIdentifier, TCL_UInt8 bsIdentifier, TCL_SystemOperatingModeType systemMode)
 {
   // LCD
@@ -61,7 +61,7 @@ static void updateLCD_RegistrationState(TCL_TerminalRegistrationStateType regist
   }
 }
 
-static void updateLCD_Busy()
+void updateLCD_Busy()
 {
   TCL_Bool busy = s_busy_1 || s_busy_2;
   
@@ -78,7 +78,7 @@ static void updateLCD_Busy()
 }
 
 #if 0
-static void updateLCD_DataIndication(TCL_Bool indStart, TCL_Bool dirSend)
+void updateLCD_DataIndication(TCL_Bool indStart, TCL_Bool dirSend)
 {
   char c = ' ';
   
@@ -99,7 +99,7 @@ static void updateLCD_DataIndication(TCL_Bool indStart, TCL_Bool dirSend)
 }
 #endif
 
-static void updateLCD_Data(const TCL_Data* data)
+void updateLCD_Data(const TCL_Data* data)
 {
   // LCD
   s_lcd.setCursor(LCD_TCLITE_DATA_RECV_COL, LCD_TCLITE_DATA_RECV_ROW);
