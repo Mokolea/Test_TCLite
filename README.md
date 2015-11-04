@@ -5,6 +5,9 @@ Terminal Controller Lite - control a TETRAPOL radio terminal to handle data tran
 
 Current TCLite: *Version 1.2.0 2015-04-07*
 
+[![Release](https://img.shields.io/github/release/Mokolea/Test_TCLite.svg)](https://github.com/Mokolea/Test_TCLite/releases)
+![License](https://img.shields.io/github/license/Mokolea/Test_TCLite.svg)
+
 ## Build
  - Open in Arduino IDE (currently using v1.6.x, Mac OS X): Test_TCLite.ino
  - Select target: Arduino Due (programming port)
