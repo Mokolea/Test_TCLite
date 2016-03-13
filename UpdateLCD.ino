@@ -23,7 +23,7 @@ void updateLCD_TerminalState(TCL_Bool connected, const TCL_Char* RFSI)
 }
 
 void updateLCD_RegistrationState(TCL_TerminalRegistrationStateType registrationState,
-                                        TCL_UInt16 rBaseNetwork, TCL_UInt8 rswIdentifier, TCL_UInt8 bsIdentifier, TCL_SystemOperatingModeType systemMode)
+                                 TCL_UInt16 rBaseNetwork, TCL_UInt8 rswIdentifier, TCL_UInt8 bsIdentifier, TCL_SystemOperatingModeType systemMode)
 {
   // LCD
   s_lcd.setCursor(LCD_REGISTRATION_STATE_COL, LCD_REGISTRATION_STATE_ROW);
